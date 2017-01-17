@@ -91,10 +91,10 @@
 *=========================================================================
 *
       PROGRAM stream
-*     IMPLICIT NONE
+      IMPLICIT NONE
 C     .. Parameters ..
       INTEGER n,offset,ndim,ntimes
-      PARAMETER (n=2000000,offset=0,ndim=n+offset,ntimes=10)
+      PARAMETER (n=134217728,offset=0,ndim=n+offset,ntimes=10)
 C     ..
 C     .. Local Scalars ..
       DOUBLE PRECISION scalar,t
@@ -233,7 +233,8 @@ C     ..
       WRITE (*,FMT=9040)
       DO 100 j = 1,4
           avgtime(j) = avgtime(j)/dble(ntimes-1)
-          WRITE (*,FMT=9050) label(j),n*bytes(j)*nbpw/mintime(j)/1.0D6,
+          ! jgw: moved /1.0D6 to beginning to avoid overflow of n*bytes*nbpw
+          WRITE (*,FMT=9050) label(j),n/1.0D6*bytes(j)*nbpw/mintime(j),
      $      avgtime(j),mintime(j),maxtime(j)
   100 CONTINUE
       PRINT *,'----------------------------------------------------'
@@ -244,9 +245,10 @@ C     ..
  9010 FORMAT (1x,a,i10)
  9020 FORMAT (1x,a,i4,a)
  9030 FORMAT (1x,a,i3,a,a)
- 9040 FORMAT ('Function',5x,'Rate (MB/s)  Avg time   Min time  Max time'
+ 9040 FORMAT ('Function',6x,'Rate (MB/s)
+     $         Avg time        Min time        Max time'
      $       )
- 9050 FORMAT (a,4 (f10.4,2x))
+ 9050 FORMAT (a,4 (f14.4,2x))
       END
 
 *-------------------------------------
@@ -258,7 +260,7 @@ C     ..
 * number occupies.
 *
       INTEGER FUNCTION realsize()
-*     IMPLICIT NONE
+      IMPLICIT NONE
 
 C     .. Local Scalars ..
       DOUBLE PRECISION result,test
@@ -323,7 +325,7 @@ C       Test #1 - compare single(1.0d0+delta) to 1.0d0
       END
 
       SUBROUTINE confuse(q,r)
-*     IMPLICIT NONE
+      IMPLICIT NONE
 C     .. Scalar Arguments ..
       DOUBLE PRECISION q,r
 C     ..
@@ -338,7 +340,7 @@ C     ..
 * Adapted from a code by John Henning of Digital Equipment Corporation
 *
       INTEGER FUNCTION checktick()
-*     IMPLICIT NONE
+      IMPLICIT NONE
 
 C     .. Parameters ..
       INTEGER n
@@ -396,7 +398,7 @@ C     ..
 
 
       SUBROUTINE checksums(a,b,c,n,ntimes)
-*     IMPLICIT NONE
+      IMPLICIT NONE
 C     ..
 C     .. Arguments ..
       DOUBLE PRECISION a(*),b(*),c(*)
@@ -404,7 +406,7 @@ C     .. Arguments ..
 C     ..
 C     .. Local Scalars ..
       DOUBLE PRECISION aa,bb,cc,scalar,suma,sumb,sumc,epsilon
-      INTEGER k
+      INTEGER j,k
 C     ..
 
 C     Repeat the main loop, but with scalars only.
@@ -459,4 +461,3 @@ C     to confuse aggressive optimizers.
       ENDIF
 
       END
-

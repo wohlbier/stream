@@ -1,8 +1,15 @@
-CC = gcc
-CFLAGS = -O2
+# for fortran need to
+# % ulimit -s unlimited
+# DDR4 & MCDRAM
+# % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 0 ./stream_c/f.exe
+# % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 1 ./stream_c/f.exe
 
-FF = g77
-FFLAGS = -O2
+CC = icc
+# https://software.intel.com/en-us/articles/optimizing-memory-bandwidth-in-knights-landing-on-stream-triad
+CFLAGS = -mcmodel medium -shared-intel -O3 -xMIC-AVX512 -DSTREAM_ARRAY_SIZE=134217728 -DOFFSET=0 -DNTIMES=10 -qopenmp -qopt-streaming-stores always
+
+FF = ifort
+FFLAGS = -mcmodel medium -shared-intel -O3 -xMIC-AVX512 -qopenmp -qopt-streaming-stores always
 
 all: stream_f.exe stream_c.exe
 
