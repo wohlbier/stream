@@ -131,6 +131,11 @@ C     .. Data statements ..
 C     ..
 
 *       --- SETUP --- determine precision and check timing ---
+#ifdef TAU_MANUAL_PROFILE
+      integer t_triad(2) / 0, 0 /
+      save t_triad
+      call tau_profile_timer(t_triad,'t_triad')
+#endif
 
       nbpw = realsize()
 
@@ -213,10 +218,16 @@ C     ..
 
           t = mysecond()
           b(1) = b(1) + t
+#ifdef TAU_MANUAL_PROFILE
+          call tau_profile_start(t_triad)
+#endif
 !$OMP PARALLEL DO
           DO 60 j = 1,n
               a(j) = b(j) + scalar*c(j)
    60     CONTINUE
+#ifdef TAU_MANUAL_PROFILE
+          call tau_profile_stop(t_triad)
+#endif
           t = mysecond() - t
           a(n) = a(n) + t
           times(4,k) = t

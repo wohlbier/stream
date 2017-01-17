@@ -9,7 +9,10 @@ CC = icc
 CFLAGS = -mcmodel medium -shared-intel -O3 -xMIC-AVX512 -DSTREAM_ARRAY_SIZE=134217728 -DOFFSET=0 -DNTIMES=10 -qopenmp -qopt-streaming-stores always
 
 FF = ifort
-FFLAGS = -mcmodel medium -shared-intel -O3 -xMIC-AVX512 -qopenmp -qopt-streaming-stores always
+FF := tau $(FF)
+FFLAGS = -mcmodel medium -shared-intel -O3 -xMIC-AVX512 -qopenmp -qopt-streaming-stores always -cpp
+FFLAGS += -DTAU_MANUAL_PROFILE
+
 
 all: stream_f.exe stream_c.exe
 
