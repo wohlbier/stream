@@ -20,9 +20,9 @@ FFLAGS = -mcmodel medium -shared-intel -g -O3 -xMIC-AVX512 -qopenmp -qopt-stream
 
 all: stream_f.exe stream_c.exe
 
-stream_f.exe: stream.f mysecond.o
+stream_f.exe: stream.f90 mysecond.o
 	$(CC) $(CFLAGS) -c mysecond.c $(LDFLAGS)
-	$(FF) $(FFLAGS) -c stream.f
+	$(FF) $(FFLAGS) -c stream.f90
 	$(FF) $(FFLAGS) stream.o mysecond.o -o stream_f.exe
 
 stream_c.exe: stream.c
