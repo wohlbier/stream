@@ -46,6 +46,9 @@
 # include <float.h>
 # include <limits.h>
 # include <sys/time.h>
+#ifdef __PAPI__
+# include <papi.h>
+#endif
 
 /*-----------------------------------------------------------------------
  * INSTRUCTIONS:
@@ -340,6 +343,17 @@ main()
 	times[2][k] = mysecond() - times[2][k];
 	
 	times[3][k] = mysecond();
+
+#ifdef __PAPI__
+//	int Events[2] = { PAPI_TOT_CYC, PAPI_TOT_INS };
+//	int num_hwcntrs = 0;
+//	if ((num_hwcntrs = PAPI_num_counters()) <= PAPI_OK) 
+//	  return 1;
+//	printf("This system has %d available counters.", num_hwcntrs);
+//	if (num_hwcntrs > 2)
+//	  num_hwcntrs = 2;
+#endif
+
 #ifdef TUNED
         tuned_STREAM_Triad(scalar);
 #else
