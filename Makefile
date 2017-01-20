@@ -15,7 +15,7 @@ CFLAGS = -mcmodel medium -shared-intel -g -O3 -xMIC-AVX512 -DSTREAM_ARRAY_SIZE=1
 
 FF = ifort
 FF := tau $(FF)
-FFLAGS = -mcmodel medium -shared-intel -g -O3 -xMIC-AVX512 -qopenmp -qopt-streaming-stores always -cpp
+FFLAGS = -mcmodel medium -shared-intel -g -O3 -xMIC-AVX512 -qopenmp -qopt-streaming-stores always -fpp
 #FFLAGS += -DTAU_MANUAL_PROFILE
 
 all: stream_f.exe stream_c.exe

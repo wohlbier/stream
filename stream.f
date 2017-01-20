@@ -164,11 +164,11 @@ C     ..
 !$OMP END PARALLEL
 
 !$OMP PARALLEL DO
-      DO 10 j = 1,n
+      DO j = 1,n
           a(j) = 2.0d0
           b(j) = 0.5D0
           c(j) = 0.0D0
-   10 CONTINUE
+      END DO
       t = mysecond()
 !$OMP PARALLEL DO
       DO 20 j = 1,n
