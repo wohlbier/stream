@@ -91,6 +91,7 @@
 !*=========================================================================
 !*
 PROGRAM stream
+  use omp_lib
   IMPLICIT NONE
 !C     .. Parameters ..
   INTEGER n,offset,ndim,ntimes
@@ -109,8 +110,8 @@ PROGRAM stream
   DOUBLE PRECISION mysecond
   INTEGER checktick,realsize
   EXTERNAL mysecond,checktick,realsize
-  !$    INTEGER omp_get_num_threads
-  !$    EXTERNAL omp_get_num_threads
+  !!$    INTEGER omp_get_num_threads
+  !!$    EXTERNAL omp_get_num_threads
   !C     ..
   !C     .. Intrinsic Functions ..
   !C
@@ -182,6 +183,7 @@ PROGRAM stream
   PRINT *,'----------------------------------------------------'
 
   !*       --- MAIN LOOP --- repeat test cases NTIMES times ---
+
   scalar = 0.5d0*a(1)
   DO k = 1,ntimes
 

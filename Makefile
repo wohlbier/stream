@@ -16,7 +16,7 @@ CFLAGS = -mcmodel medium -shared-intel -g -O3 -xMIC-AVX512 -DSTREAM_ARRAY_SIZE=1
 FF = ifort
 FF := tau $(FF)
 FFLAGS = -mcmodel medium -shared-intel -g -O3 -xMIC-AVX512 -qopenmp -qopt-streaming-stores always -fpp
-#FFLAGS += -DTAU_MANUAL_PROFILE
+FFLAGS += -DTAU_MANUAL_PROFILE
 
 all: stream_f.exe stream_c.exe
 
@@ -29,7 +29,7 @@ stream_c.exe: stream.c
 	$(CC) $(CFLAGS) stream.c -o stream_c.exe $(LDFLAGS)
 
 clean:
-	rm -f stream_f.exe stream_c.exe *.o
+	-$(RM) -f *~ *.o *.inst.* stream_f.exe stream_c.exe 
 
 # an example of a more complex build line for the Intel icc compiler
 stream.icc: stream.c
