@@ -219,16 +219,18 @@ PROGRAM stream
 
      t = mysecond()
      b(1) = b(1) + t
+     !$OMP PARALLEL
 #ifdef TAU_MANUAL_PROFILE
      call tau_profile_start(t_triad)
 #endif
-     !$OMP PARALLEL DO
+     !$OMP DO
      DO j = 1,n
         a(j) = b(j) + scalar*c(j)
      END DO
 #ifdef TAU_MANUAL_PROFILE
      call tau_profile_stop(t_triad)
 #endif
+     !$OMP END PARALLEL
      t = mysecond() - t
      a(n) = a(n) + t
      times(4,k) = t
@@ -257,8 +259,8 @@ PROGRAM stream
 9010 FORMAT (1x,a,i10)
 9020 FORMAT (1x,a,i4,a)
 9030 FORMAT (1x,a,i3,a,a)
-9040 FORMAT ('Function',6x,'Rate (MB/s) &
-          Avg time        Min time        Max time' &
+9040 FORMAT ('Function',7x,'Rate (MB/s)',8x, &
+              'Avg time        Min time        Max time' &
           )
 9050 FORMAT (a,4 (f14.4,2x))
 END PROGRAM stream
