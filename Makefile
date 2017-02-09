@@ -29,7 +29,7 @@ stream_c.exe: stream.c
 	$(CC) $(CFLAGS) stream.c -o stream_c.exe $(LDFLAGS)
 
 clean:
-	-$(RM) -f *~ *.o *.inst.* stream_f.exe stream_c.exe 
+	-$(RM) -f *~ *.inst.* *.o *.pdb stream_f.exe stream_c.exe 
 
 # an example of a more complex build line for the Intel icc compiler
 stream.icc: stream.c
