@@ -1,0 +1,13 @@
+#!/bin/bash
+ulimit -s unlimited
+
+#/work1/compiler/advisor_2017.1.2.501009/bin64/advixe-cl -collect survey -no-auto-finalize -project-dir /usr/people/wohlbier/devel/stream/prefetch -- /usr/people/wohlbier/devel/stream/stream_f.exe
+#/work1/compiler/advisor_2017.1.2.501009/bin64/advixe-cl -collect tripcounts -flops-and-masks -project-dir /usr/people/wohlbier/devel/stream/prefetch -- /usr/people/wohlbier/devel/stream/stream_f.exe
+
+# DRAM
+#/work1/compiler-beta/advisor_2018.0.2.506306/bin64/advixe-cl -collect survey -no-auto-finalize -project-dir /usr/people/wohlbier/devel/stream/prefetch -- /usr/people/wohlbier/devel/stream/stream_f.exe
+#/work1/compiler-beta/advisor_2018.0.2.506306/bin64/advixe-cl -collect tripcounts -flops-and-masks -project-dir /usr/people/wohlbier/devel/stream/prefetch -- /usr/people/wohlbier/devel/stream/stream_f.exe
+
+# MCDRAM
+/work1/compiler-beta/advisor_2018.0.2.506306/bin64/advixe-cl -collect survey -no-auto-finalize -project-dir /usr/people/wohlbier/devel/stream/prefetch -- numactl -m 1 /usr/people/wohlbier/devel/stream/stream_f.exe
+/work1/compiler-beta/advisor_2018.0.2.506306/bin64/advixe-cl -collect tripcounts -flops-and-masks -project-dir /usr/people/wohlbier/devel/stream/prefetch -- numactl -m 1 /usr/people/wohlbier/devel/stream/stream_f.exe

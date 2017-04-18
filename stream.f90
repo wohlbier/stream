@@ -91,11 +91,20 @@
 !*=========================================================================
 !*
 PROGRAM stream
+#ifdef __ITT_NOTIFY__
+  use ittnotify
+#endif
   use omp_lib
   IMPLICIT NONE
 !C     .. Parameters ..
   INTEGER n,offset,ndim,ntimes
-  PARAMETER (n=134217728,offset=0,ndim=n+offset,ntimes=10)
+  !PARAMETER (n=134217728,offset=0,ndim=n+offset,ntimes=100)
+
+  ! won't fit mcdram. with numactl -p 1 120 GB/s. cache mode get sub DRAM rate
+  !PARAMETER (n=2000000000,offset=0,ndim=n+offset,ntimes=100)
+
+  ! fits in mcdram. get full BW in flat, 1/2 in cache mode
+  PARAMETER (n=300000000,offset=0,ndim=n+offset,ntimes=100)
   !C     ..
   !C     .. Local Scalars ..
   DOUBLE PRECISION scalar,t
@@ -136,6 +145,18 @@ PROGRAM stream
   save t_triad
   call tau_profile_timer(t_triad,'t_triad')
 #endif
+#ifdef __PREFETCH__
+  ! cache mode:
+  integer, parameter :: pf_offset=2048
+  integer, parameter :: pf_hint=1
+  ! flat mcdram: doesn't help
+  !integer, parameter :: pf_offset=8
+  !integer, parameter :: pf_hint=2
+#endif
+
+#ifdef __ITT_NOTIFY__
+  call ITT_PAUSE()
+#endif
 
   nbpw = realsize()
 
@@ -145,7 +166,7 @@ PROGRAM stream
   WRITE (*,FMT=9010) 'Array size = ',n
   WRITE (*,FMT=9010) 'Offset     = ',offset
   WRITE (*,FMT=9020) 'The total memory requirement is ', &
-       3*nbpw*n/ (1024*1024),' MB'
+       3*nbpw*(n/ (1024*1024)),' MB'
   WRITE (*,FMT=9030) 'You are running each test ',ntimes,' times'
   WRITE (*,FMT=9030) '--'
   WRITE (*,FMT=9030) 'The *best* time for each test is used'
@@ -160,7 +181,7 @@ PROGRAM stream
 
   PRINT *,'----------------------------------------------'
   !$OMP PARALLEL
-  PRINT *,'Printing one line per active thread....'
+  !PRINT *,'Printing one line per active thread....'
   !$OMP END PARALLEL
 
   !$OMP PARALLEL DO
@@ -223,10 +244,21 @@ PROGRAM stream
 #ifdef TAU_MANUAL_PROFILE
      call tau_profile_start(t_triad)
 #endif
+#ifdef __ITT_NOTIFY__
+  call ITT_RESUME()
+#endif
      !$OMP DO
      DO j = 1,n
+#ifdef __PREFETCH__
+        call mm_prefetch(a(j+pf_offset),pf_hint)
+        call mm_prefetch(b(j+pf_offset),pf_hint)
+        call mm_prefetch(c(j+pf_offset),pf_hint)
+#endif
         a(j) = b(j) + scalar*c(j)
      END DO
+#ifdef __ITT_NOTIFY__
+  call ITT_PAUSE()
+#endif
 #ifdef TAU_MANUAL_PROFILE
      call tau_profile_stop(t_triad)
 #endif
@@ -257,7 +289,7 @@ PROGRAM stream
 
 9000 FORMAT (1x,a,i6,a)
 9010 FORMAT (1x,a,i10)
-9020 FORMAT (1x,a,i4,a)
+9020 FORMAT (1x,a,i6,a)
 9030 FORMAT (1x,a,i3,a,a)
 9040 FORMAT ('Function',7x,'Rate (MB/s)',8x, &
               'Avg time        Min time        Max time' &
