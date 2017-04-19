@@ -28,8 +28,9 @@ FFLAGS = -fpp -mcmodel medium -qopenmp -qopt-report=5 -g -O3 -xMIC-AVX512
 
 # Intel ITT Notify API
 #FFLAGS+=-D__ITT_NOTIFY__ -I/work1/compiler/vtune_amplifier_xe/include/intel64
+#LDFLAGS+=-L/work1/compiler/vtune_amplifier_xe/lib64 -littnotify
 FFLAGS+=-D__ITT_NOTIFY__ -I/work1/compiler-beta/vtune_amplifier_2018/include/intel64
-LDFLAGS+=-L/work1/compiler/vtune_amplifier_xe/lib64 -littnotify
+LDFLAGS+=-L/work1/compiler-beta/vtune_amplifier_2018/lib64 -littnotify
 
 all: stream_f.exe stream_c.exe assembler
 #all: stream_f.exe assembler
