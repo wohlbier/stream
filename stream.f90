@@ -105,6 +105,9 @@ PROGRAM stream
 
   ! fits in mcdram. get full BW in flat, 1/2 in cache mode
   PARAMETER (n=300000000,offset=0,ndim=n+offset,ntimes=100)
+
+  ! for profiling
+  !PARAMETER (n=300000000,offset=0,ndim=n+offset,ntimes=10)
   !C     ..
   !C     .. Local Scalars ..
   DOUBLE PRECISION scalar,t
@@ -205,6 +208,9 @@ PROGRAM stream
 
   !*       --- MAIN LOOP --- repeat test cases NTIMES times ---
 
+#ifdef __ITT_NOTIFY__
+  call ITT_RESUME()
+#endif
   scalar = 0.5d0*a(1)
   DO k = 1,ntimes
 
@@ -240,14 +246,10 @@ PROGRAM stream
 
      t = mysecond()
      b(1) = b(1) + t
-     !$OMP PARALLEL
+     !$OMP PARALLEL DO
 #ifdef TAU_MANUAL_PROFILE
      call tau_profile_start(t_triad)
 #endif
-#ifdef __ITT_NOTIFY__
-  call ITT_RESUME()
-#endif
-     !$OMP DO
      DO j = 1,n
 #ifdef __PREFETCH__
         call mm_prefetch(a(j+pf_offset),pf_hint)
@@ -256,17 +258,16 @@ PROGRAM stream
 #endif
         a(j) = b(j) + scalar*c(j)
      END DO
-#ifdef __ITT_NOTIFY__
-  call ITT_PAUSE()
-#endif
 #ifdef TAU_MANUAL_PROFILE
      call tau_profile_stop(t_triad)
 #endif
-     !$OMP END PARALLEL
      t = mysecond() - t
      a(n) = a(n) + t
      times(4,k) = t
   END DO
+#ifdef __ITT_NOTIFY__
+  call ITT_PAUSE()
+#endif
 
 !*       --- SUMMARY ---
   DO k = 2,ntimes
