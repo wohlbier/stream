@@ -18,7 +18,7 @@ CFLAGS = -mcmodel medium -qopenmp -qopt-report=5 -g -O3 -xMIC-AVX512 -ffreestand
 FF = ifort
 FFLAGS = -fpp -mcmodel medium -qopenmp -qopt-report=5 -g -O3 -xMIC-AVX512 
 #FFLAGS+=-qopt-prefetch-distance=64,8
-#FFLAGS+=-qopt-streaming-stores=always
+FFLAGS+=-qopt-streaming-stores=always
 #FFLAGS+=-qopt-prefetch=0
 #FFLAGS+=-no-vec
 #FFLAGS+=-D__PREFETCH__

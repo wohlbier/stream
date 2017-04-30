@@ -5,10 +5,10 @@ ARGS="-no-stack-stitching -stackwalk-mode=online"
 
 #NUMA=""
 #PROJECT="CACHE"
-#NUMA="numactl -m 0"
-#PROJECT=DRAM
-NUMA="numactl -m 1"
-PROJECT=MCDRAM
+NUMA="numactl -m 0"
+PROJECT=DRAM
+#NUMA="numactl -m 1"
+#PROJECT=MCDRAM
 
 ${NUMA} advixe-cl -collect survey -no-auto-finalize -project-dir /usr/people/wohlbier/devel/stream/${PROJECT} ${ARGS} -- /usr/people/wohlbier/devel/stream/stream_f.exe
 ${NUMA} advixe-cl -collect tripcounts -flops-and-masks -project-dir /usr/people/wohlbier/devel/stream/${PROJECT} -- /usr/people/wohlbier/devel/stream/stream_f.exe
