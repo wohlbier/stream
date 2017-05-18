@@ -22,6 +22,7 @@ FFLAGS+=-qopt-streaming-stores=always
 #FFLAGS+=-qopt-prefetch=0
 #FFLAGS+=-no-vec
 #FFLAGS+=-D__PREFETCH__
+#FFLAGS+=-D__INCREASE_AI__
 
 #FF := tau $(FF)
 #FFLAGS += -DTAU_MANUAL_PROFILE

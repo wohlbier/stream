@@ -256,7 +256,11 @@ PROGRAM stream
         call mm_prefetch(b(j+pf_offset),pf_hint)
         call mm_prefetch(c(j+pf_offset),pf_hint)
 #endif
-        a(j) = b(j) + scalar*c(j)
+#ifdef __INCREASE_AI__
+        c(j) = a(j) + scalar*b(j) ! += 2 FL
+        b(j) = c(j) + scalar*a(j) ! += 2 FL
+#endif
+        a(j) = b(j) + scalar*c(j) ! 2 FL
      END DO
 #ifdef TAU_MANUAL_PROFILE
      call tau_profile_stop(t_triad)
