@@ -1,23 +1,55 @@
 #!/bin/bash
-rm -rf .tau
-tau init --openmp --select-file $HOME/devel/miniapp1/select.tau --profile merged
-tau measurement edit profile --callpath 0 --openmp opari --throttle F --profile merged
-#tau measurement copy profile cycles --metrics PAPI_TOT_CYC PAPI_NATIVE:UNHALTED_CORE_CYCLES
-tau measurement copy profile fp_ops --metrics PAPI_NATIVE:UOPS_RETIRED:SCALAR_SIMD PAPI_NATIVE:UOPS_RETIRED:PACKED_SIMD
-tau measurement copy profile bandwidth --metrics PAPI_L2_LDM PAPI_SR_INS
 
-#tau measurement copy profile bw1 --metrics PAPI_L2_TCM PAPI_NATIVE:MEM_UOPS_RETIRED:ALL_STORES
-#tau measurement copy profile bw2 --metrics PAPI_NATIVE:MEM_UOPS_RETIRED:L2_MISS_LOADS PAPI_NATIVE:MEM_UOPS_RETIRED:ALL_STORES
+# Configure your project...
+APPNAME=stream
 
-# DMND_DATA_RD: Counts the number of demand and DCU prefetch data reads of
-# full and partial cachelines as well as demand data page table entry
-# cacheline reads. Does not count L2 data read prefetches or instruction
-# fetches.
-# tau measurement copy profile bw3 --metrics PAPI_NATIVE:OFFCORE_RESPONSE_0:DMND_DATA_RD PAPI_NATIVE:MEM_UOPS_RETIRED:ALL_STORES
+# initialize tau commander project
+tau init --application-name $APPNAME --target-name haise --openmp
 
-# ANY_PF_L2: counts any prefetch requests
-tau measurement copy profile bw3 --metrics PAPI_NATIVE:OFFCORE_RESPONSE_0:DMND_DATA_RD:ANY_PF_L2 PAPI_NATIVE:MEM_UOPS_RETIRED:ALL_STORES
+# change the fortran parser
+#tau project edit stream --force-tau-options="-optPdtF90Parser=gfparse -optVerbose"
 
+# time
+MEASNAME=time
+tau measurement create $MEASNAME --metrics="TIME" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau select $MEASNAME
 
-#https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/508416
-#OFFCORE_RESPONSE.PF_L2_DATA_RD.LLC_MISS.LOCAL_DRAM_N
+# load/store instructions
+MEASNAME=load_store_ins
+tau measurement create $MEASNAME --metrics="TIME,PAPI_LD_INS,PAPI_SR_INS,PAPI_TOT_INS" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau select $MEASNAME
+
+# floating point instructions
+MEASNAME=floating_pt_ins
+tau measurement create $MEASNAME --metrics="TIME,PAPI_FP_INS,PAPI_TOT_INS" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau select $MEASNAME
+
+# flops
+MEASNAME=flops
+tau measurement create $MEASNAME --metrics="TIME,PAPI_FP_OPS" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau select $MEASNAME
+
+# L2
+MEASNAME=L2
+tau measurement create $MEASNAME --metrics="TIME,PAPI_L2_TCM,PAPI_L2_TCA" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau select $MEASNAME
+
+# L3
+MEASNAME=L3
+tau measurement create $MEASNAME --metrics="TIME,PAPI_L3_TCM,PAPI_L3_TCA" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau select $MEASNAME
+
+# uops
+MEASNAME=uops
+tau measurement create $MEASNAME --metrics="TIME,PAPI_NATIVE:UOPS_RETIRED:SCALAR_SIMD,PAPI_NATIVE:UOPS_RETIRED:PACKED_SIMD,PAPI_NATIVE:UOPS_RETIRED:ALL" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau select $MEASNAME
+
+# cpi
+MEASNAME=cpi
+tau measurement create $MEASNAME --metrics="TIME,PAPI_TOT_CYC,PAPI_TOT_INS" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau select $MEASNAME
+
+# stalls
+MEASNAME=stalls
+tau measurement create $MEASNAME --metrics="TIME,PAPI_TOT_CYC,PAPI_STL_ICY" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau select $MEASNAME

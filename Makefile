@@ -5,9 +5,13 @@
 # % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 1 ./stream_c/f.exe
 
 CC = icc
-#CC := tau $(CC)
+CC := tau $(CC)
 # https://software.intel.com/en-us/articles/optimizing-memory-bandwidth-in-knights-landing-on-stream-triad
-CFLAGS = -mcmodel medium -qopenmp -qopt-report=5 -g -O3 -xMIC-AVX512 -ffreestanding -DSTREAM_ARRAY_SIZE=300000000 -DOFFSET=0 -DNTIMES=100
+CFLAGS = -mcmodel medium -g -O3 -DSTREAM_ARRAY_SIZE=300000000 -DOFFSET=0 -DNTIMES=100
+#CFLAGS += -ffreestanding
+#CFLAGS += -qopenmp
+#CFLAGS += -qopt-report=5
+#CFLAGS += -xMIC-AVX512
 #CFLAGS+= -qopt-prefetch-distance=64,8 -qopt-streaming-stores=always
 #CFLAGS+=-no-vec
 
@@ -16,9 +20,14 @@ CFLAGS = -mcmodel medium -qopenmp -qopt-report=5 -g -O3 -xMIC-AVX512 -ffreestand
 #LDFLAGS += -L$(PAPI)/lib -lpapi
 
 FF = ifort
-FFLAGS = -fpp -mcmodel medium -qopenmp -qopt-report=5 -g -O3 -xMIC-AVX512 
+FF := tau $(FF)
+FFLAGS = -fpp -mcmodel medium -g -O3
+#FFLAGS += -qopenmp
+FFLAGS += -openmp
+#FFLAGS += -qopt-report=5
+#FFLAGS += -xMIC-AVX512
 #FFLAGS+=-qopt-prefetch-distance=64,8
-FFLAGS+=-qopt-streaming-stores=always
+#FFLAGS+=-qopt-streaming-stores=always
 #FFLAGS+=-qopt-prefetch=0
 #FFLAGS+=-no-vec
 #FFLAGS+=-D__PREFETCH__
@@ -30,11 +39,12 @@ FFLAGS+=-qopt-streaming-stores=always
 # Intel ITT Notify API
 #FFLAGS+=-D__ITT_NOTIFY__ -I/work1/compiler/vtune_amplifier_xe/include/intel64
 #LDFLAGS+=-L/work1/compiler/vtune_amplifier_xe/lib64 -littnotify
-FFLAGS+=-D__ITT_NOTIFY__ -I/work1/compiler-beta/vtune_amplifier_2018/include/intel64
-LDFLAGS+=-L/work1/compiler-beta/vtune_amplifier_2018/lib64 -littnotify
+#FFLAGS+=-D__ITT_NOTIFY__ -I/work1/compiler-beta/vtune_amplifier_2018/include/intel64
+#LDFLAGS+=-L/work1/compiler-beta/vtune_amplifier_2018/lib64 -littnotify
 
-all: stream_f.exe stream_c.exe assembler
+#all: stream_f.exe stream_c.exe assembler
 #all: stream_f.exe assembler
+all: stream_f.exe
 
 stream_f.exe: stream.f90 mysecond.o
 	$(CC) $(CFLAGS) -c mysecond.c $(LDFLAGS)
