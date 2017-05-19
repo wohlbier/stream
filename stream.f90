@@ -104,10 +104,10 @@ PROGRAM stream
   !PARAMETER (n=2000000000,offset=0,ndim=n+offset,ntimes=100)
 
   ! fits in mcdram. get full BW in flat, 1/2 in cache mode
-  PARAMETER (n=300000000,offset=0,ndim=n+offset,ntimes=100)
+  !PARAMETER (n=300000000,offset=0,ndim=n+offset,ntimes=100)
 
   ! for profiling
-  !PARAMETER (n=300000000,offset=0,ndim=n+offset,ntimes=10)
+  PARAMETER (n=300000000,offset=0,ndim=n+offset,ntimes=10)
   !C     ..
   !C     .. Local Scalars ..
   DOUBLE PRECISION scalar,t
