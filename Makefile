@@ -6,7 +6,7 @@
 
 #CC = gcc
 CC = icc
-#CC := tau $(CC)
+CC := tau $(CC)
 # https://software.intel.com/en-us/articles/optimizing-memory-bandwidth-in-knights-landing-on-stream-triad
 CFLAGS = -g -O3 -DSTREAM_ARRAY_SIZE=300000000 -DOFFSET=0 -DNTIMES=100
 CFLAGS += -mcmodel medium
@@ -23,7 +23,7 @@ CFLAGS += -mcmodel medium
 
 #FF = gfortran
 FF = ifort
-#FF := tau $(FF)
+FF := tau $(FF)
 FFLAGS = -g -O3
 FFLAGS += -fpp
 #FFLAGS += -cpp
