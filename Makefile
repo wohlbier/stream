@@ -23,7 +23,6 @@ CFLAGS += -mcmodel medium
 
 #FF = gfortran
 FF = ifort
-FF := tau $(FF)
 FFLAGS = -g -O3
 FFLAGS += -fpp
 #FFLAGS += -cpp
@@ -40,8 +39,8 @@ FFLAGS += -openmp
 #FFLAGS+=-D__PREFETCH__
 #FFLAGS+=-D__INCREASE_AI__
 
-#FF := tau $(FF)
-#FFLAGS += -DTAU_MANUAL_PROFILE
+FF := tau $(FF)
+FFLAGS += -D__TAU_MANUAL_PROFILE__
 
 # Intel ITT Notify API
 #FFLAGS+=-D__ITT_NOTIFY__ -I/work1/compiler/vtune_amplifier_xe/include/intel64

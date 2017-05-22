@@ -143,7 +143,7 @@ PROGRAM stream
   !C     ..
   
   !*       --- SETUP --- determine precision and check timing ---
-#ifdef TAU_MANUAL_PROFILE
+#ifdef __TAU_MANUAL_PROFILE__
   integer t_triad(2) / 0, 0 /
   save t_triad
   call tau_profile_timer(t_triad,'t_triad')
@@ -246,10 +246,10 @@ PROGRAM stream
 
      t = mysecond()
      b(1) = b(1) + t
-     !$OMP PARALLEL DO
-#ifdef TAU_MANUAL_PROFILE
+#ifdef __TAU_MANUAL_PROFILE__
      call tau_profile_start(t_triad)
 #endif
+     !$OMP PARALLEL DO
      DO j = 1,n
 #ifdef __PREFETCH__
         call mm_prefetch(a(j+pf_offset),pf_hint)
@@ -262,7 +262,7 @@ PROGRAM stream
 #endif
         a(j) = b(j) + scalar*c(j) ! 2 FL
      END DO
-#ifdef TAU_MANUAL_PROFILE
+#ifdef __TAU_MANUAL_PROFILE__
      call tau_profile_stop(t_triad)
 #endif
      t = mysecond() - t

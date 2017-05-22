@@ -11,53 +11,33 @@ tau init --application-name $APPNAME --target-name haise --mpi F --openmp
 
 # time
 MEASNAME=time
-tau measurement create $MEASNAME --metrics="TIME" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau measurement create $MEASNAME --metrics="TIME" --compiler-inst fallback --sample F --source-inst automatic
 tau select $MEASNAME
 
 # load/store instructions
 MEASNAME=load_store_ins
-tau measurement create $MEASNAME --metrics="TIME,PAPI_LD_INS,PAPI_SR_INS,PAPI_TOT_INS" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau measurement create $MEASNAME --metrics="TIME,PAPI_LD_INS,PAPI_SR_INS,PAPI_TOT_INS" --compiler-inst fallback --sample F --source-inst automatic
 tau select $MEASNAME
 
-# floating point instructions
-MEASNAME=floating_pt_ins
-tau measurement create $MEASNAME --metrics="TIME,PAPI_FP_INS,PAPI_TOT_INS" --compiler-inst fallback --profile merged --sample F --source-inst automatic
-tau select $MEASNAME
-
-# flops
-MEASNAME=flops
-tau measurement create $MEASNAME --metrics="TIME,PAPI_FP_OPS" --compiler-inst fallback  --profile merged --sample F --source-inst automatic
+# load/store uops retired
+MEASNAME=load_store_uops
+tau measurement create $MEASNAME --metrics="TIME,PAPI_NATIVE:MEM_UOPS_RETIRED:ALL_LOADS,PAPI_NATIVE:MEM_UOPS_RETIRED:ALL_STORES" --compiler-inst fallback --sample F --source-inst automatic
 tau select $MEASNAME
 
 # L2
 MEASNAME=L2
-tau measurement create $MEASNAME --metrics="TIME,PAPI_L2_TCM,PAPI_L2_TCA" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau measurement create $MEASNAME --metrics="TIME,PAPI_L2_TCM,PAPI_L2_TCA" --compiler-inst fallback --sample F --source-inst automatic
 tau select $MEASNAME
 
 # L3
 MEASNAME=L3
-tau measurement create $MEASNAME --metrics="TIME,PAPI_L3_TCM,PAPI_L3_TCA" --compiler-inst fallback --profile merged --sample F --source-inst automatic
-tau select $MEASNAME
-
-# uops
-MEASNAME=uops
-tau measurement create $MEASNAME --metrics="TIME,PAPI_NATIVE:UOPS_RETIRED:SCALAR_SIMD,PAPI_NATIVE:UOPS_RETIRED:PACKED_SIMD,PAPI_NATIVE:UOPS_RETIRED:ALL" --compiler-inst fallback --profile merged --sample F --source-inst automatic
-tau select $MEASNAME
-
-# cpi
-MEASNAME=cpi
-tau measurement create $MEASNAME --metrics="TIME,PAPI_TOT_CYC,PAPI_TOT_INS" --compiler-inst fallback --profile merged --sample F --source-inst automatic
-tau select $MEASNAME
-
-# stalls
-MEASNAME=stalls
-tau measurement create $MEASNAME --metrics="TIME,PAPI_TOT_CYC,PAPI_STL_ICY" --compiler-inst fallback --profile merged --sample F --source-inst automatic
+tau measurement create $MEASNAME --metrics="TIME,PAPI_L3_TCM,PAPI_L3_TCA" --compiler-inst fallback --sample F --source-inst automatic
 tau select $MEASNAME
 
 # Arithmetic intensity.
-# Cannot measure FP_INS + SR_INS + LD_INS. Use load_store_ins to get the ratio
-# of loads to stores, and use that in the formula to derive AI.
-# FP_INS/(8 * R * SR_INS)
+# Cannot measure flops plus loads plus stores. Use load_store_ins to get the
+# ratio R of loads to stores, and use that in the formula to derive AI.
+# PAPI_DP_OPS/(8 * R * SR_INS)
 MEASNAME=AI
-tau measurement create $MEASNAME --metrics="TIME,PAPI_FP_INS,PAPI_SR_INS" --compiler-inst fallback --profile merged --profile merged --sample F --source-inst automatic
+tau measurement create $MEASNAME --metrics="TIME,PAPI_DP_OPS,PAPI_NATIVE:MEM_UOPS_RETIRED:ALL_STORES" --compiler-inst fallback --sample F --source-inst automatic
 tau select $MEASNAME
