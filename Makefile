@@ -4,32 +4,33 @@
 # % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 0 ./stream_c/f.exe
 # % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 1 ./stream_c/f.exe
 
-#CC = gcc
-CC = icc
+CC = gcc
+#CC = icc
 CC := tau $(CC)
 # https://software.intel.com/en-us/articles/optimizing-memory-bandwidth-in-knights-landing-on-stream-triad
 CFLAGS = -g -O3 -DSTREAM_ARRAY_SIZE=300000000 -DOFFSET=0 -DNTIMES=100
-CFLAGS += -mcmodel medium
+#CFLAGS += -mcmodel medium
 #CFLAGS += -ffreestanding
 #CFLAGS += -qopenmp
 #CFLAGS += -qopt-report=5
 #CFLAGS += -xMIC-AVX512
-#CFLAGS+= -qopt-prefetch-distance=64,8 -qopt-streaming-stores=always
+#CFLAGS += -qopt-prefetch-distance=64,8 -qopt-streaming-stores=always
 #CFLAGS+=-no-vec
+# gcc
+CFLAGS += -fopenmp
 
 #PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-centos7-x86_64/gcc-6.1.0/papi-5.5.1-x43c4hobnux5eemdjelyw5m3czgigfzs
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
 #LDFLAGS += -L$(PAPI)/lib -lpapi
 
-#FF = gfortran
-FF = ifort
+FF = gfortran
+#FF = ifort
 FFLAGS = -g -O3
-FFLAGS += -fpp
-#FFLAGS += -cpp
-FFLAGS += -mcmodel medium
+#FFLAGS += -fpp
+FFLAGS += -cpp
+#FFLAGS += -mcmodel medium
 #FFLAGS += -qopenmp
-FFLAGS += -openmp
-#FFLAGS += -fopenmp
+FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
 #FFLAGS+=-qopt-prefetch-distance=64,8

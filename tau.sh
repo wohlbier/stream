@@ -1,43 +1,34 @@
 #!/bin/bash
 
+# Run this as
+# % . ./tau.sh
+# the first time to export the papi path.
+
+rm -rf ./.tau
+
 # Configure your project...
 APPNAME=stream
 
+# papi built with git checkout of libpfm4
+PAPI_ROOT=${HOME}/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
+export PATH=${PAPI_ROOT}/bin:${PATH}
+
 # initialize tau commander project
-tau init --application-name $APPNAME --target-name haise --mpi F --openmp
+tau init --application-name $APPNAME --target-name centennial --mpi F --papi=${PAPI_ROOT}
+#--openmp
+
+tau select profile
+
+tau measurement edit profile --source-inst manual --compiler-inst never \
+--metrics \
+PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:RD:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:WR:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc1::UNC_M_CAS_COUNT:RD:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc1::UNC_M_CAS_COUNT:WR:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc4::UNC_M_CAS_COUNT:RD:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc4::UNC_M_CAS_COUNT:WR:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:RD:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:WR:cpu=0
 
 # change the fortran parser
 #tau project edit stream --force-tau-options="-optPdtF90Parser=gfparse -optVerbose"
-
-# time
-MEASNAME=time
-tau measurement create $MEASNAME --metrics="TIME" --compiler-inst fallback --sample F --source-inst automatic
-tau select $MEASNAME
-
-# load/store instructions
-MEASNAME=load_store_ins
-tau measurement create $MEASNAME --metrics="TIME,PAPI_LD_INS,PAPI_SR_INS,PAPI_TOT_INS" --compiler-inst fallback --sample F --source-inst automatic
-tau select $MEASNAME
-
-# load/store uops retired
-MEASNAME=load_store_uops
-tau measurement create $MEASNAME --metrics="TIME,PAPI_NATIVE:MEM_UOPS_RETIRED:ALL_LOADS,PAPI_NATIVE:MEM_UOPS_RETIRED:ALL_STORES" --compiler-inst fallback --sample F --source-inst automatic
-tau select $MEASNAME
-
-# L2
-MEASNAME=L2
-tau measurement create $MEASNAME --metrics="TIME,PAPI_L2_TCM,PAPI_L2_TCA" --compiler-inst fallback --sample F --source-inst automatic
-tau select $MEASNAME
-
-# L3
-MEASNAME=L3
-tau measurement create $MEASNAME --metrics="TIME,PAPI_L3_TCM,PAPI_L3_TCA" --compiler-inst fallback --sample F --source-inst automatic
-tau select $MEASNAME
-
-# Arithmetic intensity.
-# Cannot measure flops plus loads plus stores. Use load_store_ins to get the
-# ratio R of loads to stores, and use that in the formula to derive AI.
-# PAPI_DP_OPS/(8 * R * SR_INS)
-MEASNAME=AI
-tau measurement create $MEASNAME --metrics="TIME,PAPI_DP_OPS,PAPI_NATIVE:MEM_UOPS_RETIRED:ALL_STORES" --compiler-inst fallback --sample F --source-inst automatic
-tau select $MEASNAME
