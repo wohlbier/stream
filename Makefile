@@ -18,6 +18,7 @@ CFLAGS = -g -O3 -DSTREAM_ARRAY_SIZE=30000000 -DOFFSET=0 -DNTIMES=100
 #CFLAGS+=-no-vec
 # gcc
 CFLAGS += -fopenmp
+CFLAGS += -DUNCORE
 
 #PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
@@ -55,12 +56,15 @@ all: stream_f.exe stream_c.exe
 #all: stream_f.exe
 
 stream_f.exe: stream.f90 mysecond.o
-	$(CC) $(CFLAGS) -c mysecond.c $(LDFLAGS)
 	$(FF) $(FFLAGS) -c stream.f90
 	$(FF) $(FFLAGS) stream.o mysecond.o -o stream_f.exe $(LDFLAGS)
 
-stream_c.exe: stream.c
-	$(CC) $(CFLAGS) stream.c -o stream_c.exe $(LDFLAGS)
+%.o : %.c
+	$(CC) $(CFLAGS) -c $<
+
+C_OBJ=counter.o
+stream_c.exe: stream.c $(C_OBJ)
+	$(CC) $(CFLAGS) stream.c -o stream_c.exe $(C_OBJ) $(LDFLAGS)
 
 assembler: stream.f90
 	$(FF) $(FFLAGS) -S stream.f90

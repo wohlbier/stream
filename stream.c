@@ -49,6 +49,9 @@
 #ifdef __PAPI__
 # include <papi.h>
 #endif
+#ifdef UNCORE
+#include "uncore_imc.h"
+#endif
 
 /*-----------------------------------------------------------------------
  * INSTRUCTIONS:
@@ -307,6 +310,17 @@ main()
     printf("precision of your system timer.\n");
     printf(HLINE);
     
+#ifdef UNCORE
+    setup();
+    struct counters s1,s2;
+    uint64_t rd_diff[NMC];
+    uint64_t wr_diff[NMC];
+    for (int i = 0; i < NMC; i++) {
+      rd_diff[i] = 0;
+      wr_diff[i] = 0;
+    }
+#endif
+
     /*	--- MAIN LOOP --- repeat test cases NTIMES times --- */
 
     scalar = 3.0;
@@ -357,9 +371,23 @@ main()
 #ifdef TUNED
         tuned_STREAM_Triad(scalar);
 #else
+
+#ifdef UNCORE
+	readcounters(&s1);
+#endif
+
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
 	    a[j] = b[j]+scalar*c[j];
+
+#ifdef UNCORE
+	readcounters(&s2);
+	for (int i = 0; i < NMC; ++i) {
+	  rd_diff[i] += s2.mc_rd[i] - s1.mc_rd[i];
+	  wr_diff[i] += s2.mc_wr[i] - s1.mc_wr[i];
+	}
+#endif
+
 #endif
 	times[3][k] = mysecond() - times[3][k];
 	}
@@ -386,7 +414,20 @@ main()
 	       mintime[j],
 	       maxtime[j]);
     }
+
     printf(HLINE);
+
+#ifdef UNCORE
+    uint64_t tot_rd = 0, tot_wr = 0, tot_rdwr = 0;
+    for (int i = 0; i < NMC; ++i) {
+      tot_rd += rd_diff[i];
+      tot_wr += wr_diff[i];
+    }
+    tot_rdwr = tot_rd + tot_wr;
+    printf("Uncore measured BW: %12.1f MB/s\n",
+	((double)(tot_rdwr*64))/avgtime[3]/1024.0/1024.0);
+    printf(HLINE);
+#endif
 
     /* --- Check Results --- */
     checkSTREAMresults();
