@@ -6,9 +6,9 @@
 
 CC = gcc
 #CC = icc
-CC := tau $(CC)
+#CC := tau $(CC)
 # https://software.intel.com/en-us/articles/optimizing-memory-bandwidth-in-knights-landing-on-stream-triad
-CFLAGS = -g -O3 -DSTREAM_ARRAY_SIZE=300000000 -DOFFSET=0 -DNTIMES=100
+CFLAGS = -g -O3 -DSTREAM_ARRAY_SIZE=30000000 -DOFFSET=0 -DNTIMES=100
 #CFLAGS += -mcmodel medium
 #CFLAGS += -ffreestanding
 #CFLAGS += -qopenmp
@@ -19,7 +19,7 @@ CFLAGS = -g -O3 -DSTREAM_ARRAY_SIZE=300000000 -DOFFSET=0 -DNTIMES=100
 # gcc
 CFLAGS += -fopenmp
 
-#PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-centos7-x86_64/gcc-6.1.0/papi-5.5.1-x43c4hobnux5eemdjelyw5m3czgigfzs
+#PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
 #LDFLAGS += -L$(PAPI)/lib -lpapi
 
@@ -40,8 +40,8 @@ FFLAGS += -fopenmp
 #FFLAGS+=-D__PREFETCH__
 #FFLAGS+=-D__INCREASE_AI__
 
-FF := tau $(FF)
-FFLAGS += -D__TAU_MANUAL_PROFILE__
+#FF := tau $(FF)
+#FFLAGS += -D__TAU_MANUAL_PROFILE__
 
 # Intel ITT Notify API
 #FFLAGS+=-D__ITT_NOTIFY__ -I/work1/compiler/vtune_amplifier_xe/include/intel64
@@ -50,8 +50,9 @@ FFLAGS += -D__TAU_MANUAL_PROFILE__
 #LDFLAGS+=-L/work1/compiler-beta/vtune_amplifier_2018/lib64 -littnotify
 
 #all: stream_f.exe stream_c.exe assembler
+all: stream_f.exe stream_c.exe
 #all: stream_f.exe assembler
-all: stream_f.exe
+#all: stream_f.exe
 
 stream_f.exe: stream.f90 mysecond.o
 	$(CC) $(CFLAGS) -c mysecond.c $(LDFLAGS)
