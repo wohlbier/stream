@@ -40,8 +40,8 @@ setup()
     snprintf(fname, sizeof(fname), "/sys/devices/uncore_imc_%d", cpu);
     //evsetup(fname, &gbl.mc_rd[mc], 0x3/*event*/, 0x1/*umask*/);
     //evsetup(fname, &gbl.mc_wr[mc], 0x3, 0x2);
-    evsetup(fname, &gbl.mc_rd[mc], 0x04/*event*/, 0x03/*umask*/);
-    evsetup(fname, &gbl.mc_wr[mc], 0x04, 0x0c);
+    evsetup(fname, &gbl.mc_rd[mc], 0x04, 0x03); // cas_count_read
+    evsetup(fname, &gbl.mc_wr[mc], 0x04, 0x0c); // cas_count_write
   }
   for (int mc = 0; mc < NEDC; ++mc)
   {

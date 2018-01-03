@@ -356,6 +356,10 @@ main()
 #endif
 	times[2][k] = mysecond() - times[2][k];
 	
+#ifdef UNCORE
+	readcounters(&s1);
+#endif
+
 	times[3][k] = mysecond();
 
 #ifdef __PAPI__
@@ -371,14 +375,12 @@ main()
 #ifdef TUNED
         tuned_STREAM_Triad(scalar);
 #else
-
-#ifdef UNCORE
-	readcounters(&s1);
-#endif
-
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
 	    a[j] = b[j]+scalar*c[j];
+
+#endif
+	times[3][k] = mysecond() - times[3][k];
 
 #ifdef UNCORE
 	readcounters(&s2);
@@ -388,8 +390,6 @@ main()
 	}
 #endif
 
-#endif
-	times[3][k] = mysecond() - times[3][k];
 	}
 
     /*	--- SUMMARY --- */
@@ -423,9 +423,9 @@ main()
       tot_rd += rd_diff[i];
       tot_wr += wr_diff[i];
     }
-    tot_rdwr = tot_rd + tot_wr;
-    printf("Uncore measured BW: %12.1f MB/s\n",
-	((double)(tot_rdwr*64))/avgtime[3]/1024.0/1024.0);
+    tot_rdwr = tot_rd + tot_wr; // total, without accounting for NTIMES
+    printf("Uncore measured Triad rate: %8.1f MB/s\n",
+	   1.0E-06*((double)(tot_rdwr*64))/((double) NTIMES)/avgtime[3]);
     printf(HLINE);
 #endif
 
