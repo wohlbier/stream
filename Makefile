@@ -7,14 +7,20 @@
 #CC = gcc
 CC = icc
 #CC := tau $(CC)
-# https://software.intel.com/en-us/articles/optimizing-memory-bandwidth-in-knights-landing-on-stream-triad
-CFLAGS = -g -O3 -DSTREAM_ARRAY_SIZE=100000000 -DOFFSET=0 -DNTIMES=100 -std=gnu99
+# https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
+# Shown value of 30000000000 (30e9) is too large for my node.
+# Dr. Bandwidth says use >= 40000000 (40e6).
+CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=100000000 -DOFFSET=0 -DNTIMES=100 
 CFLAGS += -DUNCORE
+CFLAGS += -std=gnu99
+
+#icc
 CFLAGS += -mcmodel medium
-#CFLAGS += -ffreestanding
+CFLAGS += -ffreestanding
 CFLAGS += -qopenmp
 #CFLAGS += -qopt-report=5
 #CFLAGS += -xMIC-AVX512
+CFLAGS += -xAVX
 #CFLAGS += -qopt-prefetch-distance=64,8 -qopt-streaming-stores=always
 #CFLAGS+=-no-vec
 # gcc

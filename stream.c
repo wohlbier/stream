@@ -424,8 +424,14 @@ main()
       tot_wr += wr_diff[i];
     }
     tot_rdwr = tot_rd + tot_wr; // total, without accounting for NTIMES
-    printf("Uncore measured Triad rate: %8.1f MB/s\n",
-	   1.0E-06*((double)(tot_rdwr*64))/((double) NTIMES)/avgtime[3]);
+    double triad_bw_ctd
+      = 1.0E-06*((double)(tot_rdwr*64))/((double) NTIMES)/mintime[3];
+    double triad_bw_msrd = 1.0E-06 * bytes[3]/mintime[3]; // measured
+
+    printf("Uncore counted Triad rate: %8.1f MB/s\n", triad_bw_ctd);
+    printf("Stream measured Triad rate: %8.1f MB/s\n", triad_bw_msrd);
+    printf("Relative difference: %8.1f%%\n",
+	   100.0*fabs(triad_bw_ctd-triad_bw_msrd)/triad_bw_msrd);
     printf(HLINE);
 #endif
 
