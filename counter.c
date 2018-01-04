@@ -1,9 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <assert.h>
 #include <err.h>
-#include "perf_utils.h"
+#include "uncore_imc.h"
 
 struct evinfo
 {
@@ -12,8 +8,6 @@ struct evinfo
   int32_t fd;
 };
 
-#define NMC 4
-#define NEDC 0
 struct gbl_
 {
 
@@ -76,10 +70,6 @@ evsetup(const char *ename, struct evinfo *ep, int event, int umask)
     err(1, "CPU %d, event 0x%lx", cpu, hw.config);
 }
 
-#define MC_FLAG_READ 0
-#define MC_FLAG_WRITE 1
-#define EDC_FLAG_READ 2
-#define EDC_FLAG_WRITE 3
 uint64_t
 readctr(int flag, int ctr)
 {

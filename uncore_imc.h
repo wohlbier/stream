@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
+#include "perf_utils.h"
 
 #define NMC 4
 #define NEDC 0
