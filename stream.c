@@ -326,6 +326,8 @@ main()
     scalar = 3.0;
     for (k=0; k<NTIMES; k++)
 	{
+
+	  /* Copy */
 	times[0][k] = mysecond();
 #ifdef TUNED
         tuned_STREAM_Copy();
@@ -336,6 +338,7 @@ main()
 #endif
 	times[0][k] = mysecond() - times[0][k];
 	
+	  /* Scale */
 	times[1][k] = mysecond();
 #ifdef TUNED
         tuned_STREAM_Scale(scalar);
@@ -346,6 +349,7 @@ main()
 #endif
 	times[1][k] = mysecond() - times[1][k];
 	
+	  /* Add */
 	times[2][k] = mysecond();
 #ifdef TUNED
         tuned_STREAM_Add();
@@ -355,7 +359,14 @@ main()
 	    c[j] = a[j]+b[j];
 #endif
 	times[2][k] = mysecond() - times[2][k];
-	
+
+	/* Triad */
+#ifdef __TAU_MANUAL_INST__
+#include <Profile/Profiler.h>
+    TAU_PROFILE_TIMER(tautimer, "int main(int, char **) C [{stream.c}]", " ", TAU_USER);
+    TAU_PROFILE_START(tautimer);
+#endif
+
 #ifdef UNCORE
 	readcounters(&s1);
 #endif
@@ -388,6 +399,10 @@ main()
 	  rd_diff[i] += s2.mc_rd[i] - s1.mc_rd[i];
 	  wr_diff[i] += s2.mc_wr[i] - s1.mc_wr[i];
 	}
+#endif
+
+#ifdef __TAU_MANUAL_INST__
+    TAU_PROFILE_STOP(tautimer)
 #endif
 
 	}

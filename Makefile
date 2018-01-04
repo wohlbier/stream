@@ -11,9 +11,9 @@ CC = icc
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
 CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=100000000 -DOFFSET=0 -DNTIMES=100 
-CFLAGS += -DUNCORE
 CFLAGS += -std=gnu99
-
+CFLAGS += -DUNCORE
+CFLAGS += -D__TAU_MANUAL_INST__
 #icc
 CFLAGS += -mcmodel medium
 CFLAGS += -ffreestanding
@@ -49,7 +49,7 @@ FFLAGS += -fopenmp
 #FFLAGS+=-D__INCREASE_AI__
 
 #FF := tau $(FF)
-#FFLAGS += -D__TAU_MANUAL_PROFILE__
+#FFLAGS += -D__TAU_MANUAL_INST__
 
 # Intel ITT Notify API
 #FFLAGS+=-D__ITT_NOTIFY__ -I/work1/compiler/vtune_amplifier_xe/include/intel64

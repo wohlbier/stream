@@ -143,7 +143,7 @@ PROGRAM stream
   !C     ..
   
   !*       --- SETUP --- determine precision and check timing ---
-#ifdef __TAU_MANUAL_PROFILE__
+#ifdef __TAU_MANUAL_INST__
   integer t_triad(2) / 0, 0 /
   save t_triad
   call tau_profile_timer(t_triad,'t_triad')
@@ -246,7 +246,7 @@ PROGRAM stream
 
      t = mysecond()
      b(1) = b(1) + t
-#ifdef __TAU_MANUAL_PROFILE__
+#ifdef __TAU_MANUAL_INST__
      call tau_profile_start(t_triad)
 #endif
      !$OMP PARALLEL DO
@@ -262,7 +262,7 @@ PROGRAM stream
 #endif
         a(j) = b(j) + scalar*c(j) ! 2 FL
      END DO
-#ifdef __TAU_MANUAL_PROFILE__
+#ifdef __TAU_MANUAL_INST__
      call tau_profile_stop(t_triad)
 #endif
      t = mysecond() - t
