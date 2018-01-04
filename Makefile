@@ -8,7 +8,7 @@
 CC = icc
 #CC := tau $(CC)
 # https://software.intel.com/en-us/articles/optimizing-memory-bandwidth-in-knights-landing-on-stream-triad
-CFLAGS = -g -O3 -DSTREAM_ARRAY_SIZE=100000000 -DOFFSET=0 -DNTIMES=100
+CFLAGS = -g -O3 -DSTREAM_ARRAY_SIZE=100000000 -DOFFSET=0 -DNTIMES=100 -std=gnu99
 CFLAGS += -DUNCORE
 CFLAGS += -mcmodel medium
 #CFLAGS += -ffreestanding
@@ -19,6 +19,7 @@ CFLAGS += -qopenmp
 #CFLAGS+=-no-vec
 # gcc
 #CFLAGS += -fopenmp
+#CFLAGS += -mcmodel=large
 
 #PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
