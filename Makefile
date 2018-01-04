@@ -6,7 +6,7 @@
 
 #CC = gcc
 CC = icc
-#CC := tau $(CC)
+CC := tau $(CC)
 # https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
