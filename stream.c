@@ -349,7 +349,7 @@ main()
 	/* Triad */
 #ifdef __TAU_MANUAL_INST__
 #include <Profile/Profiler.h>
-    TAU_PROFILE_TIMER(tautimer, "int main(int, char **) C [{stream.c}]", " ", TAU_USER);
+    TAU_PROFILE_TIMER(tautimer, "Triad [{stream.c}]", " ", TAU_USER);
     TAU_PROFILE_START(tautimer);
 #endif
 

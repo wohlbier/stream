@@ -44,3 +44,23 @@ PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:WR:cpu=0
 # NB: Using that formula accounts for the magical million that paraprof
 # silently puts into the denominator. They are working on a fix for that, and
 # when it is fixed one will need to put their own 1e6.
+
+
+# Set up measurements of stalls to use formulas from Molka, et al.
+tau measurement copy profile mem_bnd_stall_cycs
+tau select mem_bnd_stall_cycs
+tau measurement edit mem_bnd_stall_cycs \
+--metrics \
+PAPI_NATIVE:CPU_CLK_UNHALTED:cpu=0,\
+PAPI_NATIVE:CYCLE_ACTIVITY:CYCLES_NO_EXECUTE:cpu=0,\
+PAPI_NATIVE:RESOURCE_STALLS:SB:cpu=0,\
+PAPI_NATIVE:CYCLE_ACTIVITY:STALLS_L1D_PENDING:cpu=0
+
+tau measurement copy profile bw_lat_stall_cycs
+tau select bw_lat_stall_cycs
+tau measurement edit bw_lat_stall_cycs \
+--metrics \
+PAPI_NATIVE:RESOURCE_STALLS:SB:cpu=0,\
+PAPI_NATIVE:CYCLE_ACTIVITY:STALLS_L1D_PENDING:cpu=0,\
+PAPI_NATIVE:L1D_PEND_MISS:FB_FULL:cpu=0,\
+PAPI_NATIVE:OFFCORE_REQUESTS_BUFFER:SQ_FULL:cpu=0
