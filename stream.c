@@ -312,6 +312,8 @@ main()
     scalar = 3.0;
     for (k=0; k<NTIMES; k++)
 	{
+
+	  /* Copy */
 	times[0][k] = mysecond();
 #ifdef TUNED
         tuned_STREAM_Copy();
@@ -322,6 +324,7 @@ main()
 #endif
 	times[0][k] = mysecond() - times[0][k];
 	
+	  /* Scale */
 	times[1][k] = mysecond();
 #ifdef TUNED
         tuned_STREAM_Scale(scalar);
@@ -332,6 +335,7 @@ main()
 #endif
 	times[1][k] = mysecond() - times[1][k];
 	
+	  /* Add */
 	times[2][k] = mysecond();
 #ifdef TUNED
         tuned_STREAM_Add();
@@ -341,7 +345,14 @@ main()
 	    c[j] = a[j]+b[j];
 #endif
 	times[2][k] = mysecond() - times[2][k];
-	
+
+	/* Triad */
+#ifdef __TAU_MANUAL_INST__
+#include <Profile/Profiler.h>
+    TAU_PROFILE_TIMER(tautimer, "int main(int, char **) C [{stream.c}]", " ", TAU_USER);
+    TAU_PROFILE_START(tautimer);
+#endif
+
 	times[3][k] = mysecond();
 
 #ifdef __PAPI__
@@ -360,8 +371,14 @@ main()
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
 	    a[j] = b[j]+scalar*c[j];
+
 #endif
 	times[3][k] = mysecond() - times[3][k];
+
+#ifdef __TAU_MANUAL_INST__
+    TAU_PROFILE_STOP(tautimer)
+#endif
+
 	}
 
     /*	--- SUMMARY --- */
@@ -386,6 +403,7 @@ main()
 	       mintime[j],
 	       maxtime[j]);
     }
+
     printf(HLINE);
 
     /* --- Check Results --- */

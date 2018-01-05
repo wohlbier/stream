@@ -4,6 +4,9 @@
 # % . ./tau.sh
 # the first time to export the papi path.
 
+# Run app as
+# % tau numactl -C 0 -- ./stream_c.exe
+
 rm -rf ./.tau
 
 # Configure your project...
@@ -14,30 +17,30 @@ PAPI_ROOT=${HOME}/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/pa
 export PATH=${PAPI_ROOT}/bin:${PATH}
 
 # initialize tau commander project
-tau init --application-name $APPNAME --target-name centennial --mpi F --papi=${PAPI_ROOT}
+tau init --application-name $APPNAME --target-name centennial --mpi F --papi=${PAPI_ROOT} --tau nightly
 #--openmp
 
 tau select profile
 
+# debugging
+#tau measurement edit profile --keep-inst-files
+
 tau measurement edit profile --source-inst manual --compiler-inst never \
 --metrics \
-PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:RD:cpu=0
+PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:RD:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:WR:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc1::UNC_M_CAS_COUNT:RD:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc1::UNC_M_CAS_COUNT:WR:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc4::UNC_M_CAS_COUNT:RD:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc4::UNC_M_CAS_COUNT:WR:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:RD:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:WR:cpu=0
 
-#PAPI_NATIVE:OFFCORE_RESPONSE_0:DMND_DATA_RD:DMND_RFO:DMND_IFETCH:PF_DATA_RD:PF_RFO:PF_LLC_DATA_RD:PF_LLC_RFO:L3_MISS:NO_SUPP:SNP_NONE:SNP_NOT_NEEDED:SNP_MISS:SNP_NO_FWD
+# run complains about incompatible papi metrics, but generates results.
 
-#PAPI_NATIVE:MEM_UOPS_RETIRED:ALL_LOADS:cpu=0
+# use this in paraprof derived metric for bandwidth
+#64*("PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:RD:cpu=0"+"PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:WR:cpu=0"+"PAPI_NATIVE:bdx_unc_imc1::UNC_M_CAS_COUNT:RD:cpu=0"+"PAPI_NATIVE:bdx_unc_imc1::UNC_M_CAS_COUNT:WR:cpu=0"+"PAPI_NATIVE:bdx_unc_imc4::UNC_M_CAS_COUNT:RD:cpu=0"+"PAPI_NATIVE:bdx_unc_imc4::UNC_M_CAS_COUNT:WR:cpu=0"+"PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:RD:cpu=0"+"PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:WR:cpu=0")/"TIME"
 
-#,PAPI_NATIVE:MEM_UOPS_RETIRED:ALL_STORES
-
-#PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:RD:cpu=0
-#,\
-#PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:WR:cpu=0,\
-#PAPI_NATIVE:bdx_unc_imc1::UNC_M_CAS_COUNT:RD:cpu=0,\
-#PAPI_NATIVE:bdx_unc_imc1::UNC_M_CAS_COUNT:WR:cpu=0,\
-#PAPI_NATIVE:bdx_unc_imc4::UNC_M_CAS_COUNT:RD:cpu=0,\
-#PAPI_NATIVE:bdx_unc_imc4::UNC_M_CAS_COUNT:WR:cpu=0,\
-#PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:RD:cpu=0,\
-#PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:WR:cpu=0
-
-# change the fortran parser
-#tau project edit stream --force-tau-options="-optPdtF90Parser=gfparse -optVerbose"
+# NB: Using that formula accounts for the magical million that paraprof
+# silently puts into the denominator. They are working on a fix for that, and
+# when it is fixed one will need to put their own 1e6.
