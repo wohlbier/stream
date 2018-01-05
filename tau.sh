@@ -64,3 +64,39 @@ PAPI_NATIVE:RESOURCE_STALLS:SB:cpu=0,\
 PAPI_NATIVE:CYCLE_ACTIVITY:STALLS_L1D_PENDING:cpu=0,\
 PAPI_NATIVE:L1D_PEND_MISS:FB_FULL:cpu=0,\
 PAPI_NATIVE:OFFCORE_REQUESTS_BUFFER:SQ_FULL:cpu=0
+
+# From Molka, et al.
+# Active cycles: 
+#         => CPU_CLK_UNHALTED
+#   Productive cycles:
+#         => CPU_CLK_UNHALTED - CYCLE_ACTIVITY:CYCLES_NO_EXECUTE
+#   Stall cycles:
+#         => CYCLE_ACTIVITY:CYCLES_NO_EXECUTE
+#     Memory bound stall cycles:
+#         => max(RESOURCE_STALLS:SB, CYCLE_ACTIVITY:STALLS_L1D_PENDING)
+#       Bandwidth bound stall cycles:
+#         => max(RESOURCE_STALLS:SB, L1D_PEND_MISS:FB_FULL
+#                + OFFCORE_REQUESTS_BUFFER:SQ_FULL)
+#       Latency bound stall cycles:
+#         => Memory bound cycles - Bandwidth bound cycles
+#     Other stall reason cycles:
+#         => Stall cycles - Memory bound stall cycles
+# 
+# In stream:
+# CPU_CLK_UNHALTED: 3.2e10
+# CYCLE_ACTIVITY:CYCLES_NO_EXECUTE: 2.0e10
+# RESOURCE_STALLS:SB: 3e6
+# CYCLE_ACTIVITY:STALLS_L1D_PENDING: 2.0e10
+# 
+# 61% cycles are stalled (CYCLE_ACTIVITY:CYCLES_NO_EXECUTE/CPU_CLK_UNHALTED)
+# and they are all STALLS_L1D_PENDING. So 60% of the time the code is memory
+# bound.
+# 
+# 
+# RESOURCE_STALLS:SB: 3e6
+# L1D_PEND_MISS:FB_FULL: 1.9e10
+# OFFCORE_REQUESTS_BUFFER:SQ_FULL: 2.1e10
+# 
+# Since these two counters add up to (>) STALLS_L1D_PENDING from the other trial,
+# this indicates that stream is always bandwidth bound.
+
