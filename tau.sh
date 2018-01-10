@@ -20,12 +20,14 @@ export PATH=${PAPI_ROOT}/bin:${PATH}
 tau init --application-name $APPNAME --target-name centennial --mpi F --papi=${PAPI_ROOT} --tau nightly
 #--openmp
 
-tau select profile
+tau measurement copy profile uncore_imc
+tau select uncore_imc
+tau measurement delete profile
 
 # debugging
-#tau measurement edit profile --keep-inst-files
+#tau measurement edit uncore_imc --keep-inst-files
 
-tau measurement edit profile --source-inst manual --compiler-inst never \
+tau measurement edit uncore_imc --source-inst manual --compiler-inst never \
 --metrics \
 PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:RD:cpu=0,\
 PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:WR:cpu=0,\
@@ -34,7 +36,15 @@ PAPI_NATIVE:bdx_unc_imc1::UNC_M_CAS_COUNT:WR:cpu=0,\
 PAPI_NATIVE:bdx_unc_imc4::UNC_M_CAS_COUNT:RD:cpu=0,\
 PAPI_NATIVE:bdx_unc_imc4::UNC_M_CAS_COUNT:WR:cpu=0,\
 PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:RD:cpu=0,\
-PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:WR:cpu=0
+PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:WR:cpu=0,\
+PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:RD:cpu=1,\
+PAPI_NATIVE:bdx_unc_imc0::UNC_M_CAS_COUNT:WR:cpu=1,\
+PAPI_NATIVE:bdx_unc_imc1::UNC_M_CAS_COUNT:RD:cpu=1,\
+PAPI_NATIVE:bdx_unc_imc1::UNC_M_CAS_COUNT:WR:cpu=1,\
+PAPI_NATIVE:bdx_unc_imc4::UNC_M_CAS_COUNT:RD:cpu=1,\
+PAPI_NATIVE:bdx_unc_imc4::UNC_M_CAS_COUNT:WR:cpu=1,\
+PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:RD:cpu=1,\
+PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:WR:cpu=1
 
 # run complains about incompatible papi metrics, but generates results.
 
@@ -47,7 +57,7 @@ PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:WR:cpu=0
 
 
 # Set up measurements of stalls to use formulas from Molka, et al.
-tau measurement copy profile mem_bnd_stall_cycs
+tau measurement copy uncore_imc mem_bnd_stall_cycs
 tau select mem_bnd_stall_cycs
 tau measurement edit mem_bnd_stall_cycs \
 --metrics \
@@ -56,7 +66,7 @@ PAPI_NATIVE:CYCLE_ACTIVITY:CYCLES_NO_EXECUTE:cpu=0,\
 PAPI_NATIVE:RESOURCE_STALLS:SB:cpu=0,\
 PAPI_NATIVE:CYCLE_ACTIVITY:STALLS_L1D_PENDING:cpu=0
 
-tau measurement copy profile bw_lat_stall_cycs
+tau measurement copy uncore_imc bw_lat_stall_cycs
 tau select bw_lat_stall_cycs
 tau measurement edit bw_lat_stall_cycs \
 --metrics \
@@ -100,3 +110,7 @@ PAPI_NATIVE:OFFCORE_REQUESTS_BUFFER:SQ_FULL:cpu=0
 # Since these two counters add up to (>) STALLS_L1D_PENDING from the other trial,
 # this indicates that stream is always bandwidth bound.
 
+# export KMP_AFFINITY=scatter
+# OMP_NUM_THREADS=40 tau ./stream_c.exe
+# benchmark triad: 131246.3 MB/s
+# tau counts (with cpu=0 and cpu=1): 132004 MB/s
