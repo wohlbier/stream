@@ -55,25 +55,24 @@ PAPI_NATIVE:bdx_unc_imc5::UNC_M_CAS_COUNT:WR:cpu=1
 # silently puts into the denominator. They are working on a fix for that, and
 # when it is fixed one will need to put their own 1e6.
 
-
 # Set up measurements of stalls to use formulas from Molka, et al.
 tau measurement copy uncore_imc mem_bnd_stall_cycs
 tau select mem_bnd_stall_cycs
 tau measurement edit mem_bnd_stall_cycs \
 --metrics \
-PAPI_NATIVE:CPU_CLK_UNHALTED:cpu=0,\
-PAPI_NATIVE:CYCLE_ACTIVITY:CYCLES_NO_EXECUTE:cpu=0,\
-PAPI_NATIVE:RESOURCE_STALLS:SB:cpu=0,\
-PAPI_NATIVE:CYCLE_ACTIVITY:STALLS_L1D_PENDING:cpu=0
+PAPI_NATIVE:CPU_CLK_UNHALTED,\
+PAPI_NATIVE:CYCLE_ACTIVITY:CYCLES_NO_EXECUTE,\
+PAPI_NATIVE:RESOURCE_STALLS:SB,\
+PAPI_NATIVE:CYCLE_ACTIVITY:STALLS_L1D_PENDING
 
 tau measurement copy uncore_imc bw_lat_stall_cycs
 tau select bw_lat_stall_cycs
 tau measurement edit bw_lat_stall_cycs \
 --metrics \
-PAPI_NATIVE:RESOURCE_STALLS:SB:cpu=0,\
-PAPI_NATIVE:CYCLE_ACTIVITY:STALLS_L1D_PENDING:cpu=0,\
-PAPI_NATIVE:L1D_PEND_MISS:FB_FULL:cpu=0,\
-PAPI_NATIVE:OFFCORE_REQUESTS_BUFFER:SQ_FULL:cpu=0
+PAPI_NATIVE:RESOURCE_STALLS:SB,\
+PAPI_NATIVE:CYCLE_ACTIVITY:STALLS_L1D_PENDING,\
+PAPI_NATIVE:L1D_PEND_MISS:FB_FULL,\
+PAPI_NATIVE:OFFCORE_REQUESTS_BUFFER:SQ_FULL
 
 # From Molka, et al.
 # Active cycles: 
@@ -107,10 +106,42 @@ PAPI_NATIVE:OFFCORE_REQUESTS_BUFFER:SQ_FULL:cpu=0
 # L1D_PEND_MISS:FB_FULL: 1.9e10
 # OFFCORE_REQUESTS_BUFFER:SQ_FULL: 2.1e10
 # 
-# Since these two counters add up to (>) STALLS_L1D_PENDING from the other trial,
+# Since counters add up to (>) STALLS_L1D_PENDING from the other trial,
 # this indicates that stream is always bandwidth bound.
+
+###############################################################################
+
+# Using OMP_NUM_THREADS=40
 
 # export KMP_AFFINITY=scatter
 # OMP_NUM_THREADS=40 tau ./stream_c.exe
 # benchmark triad: 131246.3 MB/s
 # tau counts (with cpu=0 and cpu=1): 132004 MB/s
+
+# remove :cpu=0 from stall cycle measurements.
+# OMP_NUM_THREADS=40 tau ./stream_c.exe
+
+# CPU_CLK_UNHALTED: 3.99e9
+# CYCLE_ACTIVITY:CYCLES_NO_EXECUTE: 3.63e9
+# RESOURCE_STALLS:SB: 4.11e6
+# CYCLE_ACTIVITY:STALLS_L1D_PENDING: 3.55e9
+# 
+# 91% cycles stalled (CYCLE_ACTIVITY:CYCLES_NO_EXECUTE/CPU_CLK_UNHALTED)
+# 89% cycles stalled on L1D_PENDING, i.e., 89% cycles memory bound stalls
+# 
+# RESOURCE_STALLS:SB: 3.89e6
+# L1D_PEND_MISS:FB_FULL: 8.11e8
+# OFFCORE_REQUESTS_BUFFER:SQ_FULL: 2.37e9
+# L1D_PEND_MISS:FB_FULL + OFFCORE_REQUESTS_BUFFER:SQ_FULL: 3.18e9
+# CYCLE_ACTIVITY:STALLS_L1D_PENDING: 3.55e9
+
+# 3.18e9 / 3.55e9 = 90% of cycles stalled on memory are bandwidth bound
+
+# 
+# -------------------------------------------------------------
+# Function    Best Rate MB/s  Avg time     Min time     Max time
+# Copy:          117138.9     0.013691     0.013659     0.013934
+# Scale:         117786.5     0.013618     0.013584     0.013871
+# Add:           131868.7     0.018245     0.018200     0.018796
+# Triad:         131601.5     0.018273     0.018237     0.018887
+# -------------------------------------------------------------
