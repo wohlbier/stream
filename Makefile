@@ -6,21 +6,25 @@
 
 #CC = gcc
 CC = icc
-CC := tau $(CC)
+#CC := tau $(CC)
 # https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
-CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=100000000 -DOFFSET=0 -DNTIMES=100 
+CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=1000000000 -DOFFSET=0 -DNTIMES=100 
 CFLAGS += -std=gnu99
-CFLAGS += -D__TAU_MANUAL_INST__
+#CFLAGS += -D__TAU_MANUAL_INST__
 #icc
 CFLAGS += -mcmodel medium
 CFLAGS += -ffreestanding
 CFLAGS += -qopenmp
 #CFLAGS += -qopt-report=5
 #CFLAGS += -xMIC-AVX512
-CFLAGS += -xAVX
-#CFLAGS += -qopt-prefetch-distance=64,8 -qopt-streaming-stores=always
+#CFLAGS += -xAVX512
+#CFLAGS += -xCORE-AVX512
+CFLAGS += -xCOMMON-AVX512
+#CFLAGS += -xHost
+CFLAGS += -qopt-prefetch-distance=64,8
+CFLAGS += -qopt-streaming-stores=always
 #CFLAGS+=-no-vec
 # gcc
 #CFLAGS += -fopenmp
@@ -30,14 +34,14 @@ CFLAGS += -xAVX
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
 #LDFLAGS += -L$(PAPI)/lib -lpapi
 
-FF = gfortran
-#FF = ifort
+#FF = gfortran
+FF = ifort
 FFLAGS = -g -O3
-#FFLAGS += -fpp
-FFLAGS += -cpp
-#FFLAGS += -mcmodel medium
-#FFLAGS += -qopenmp
-FFLAGS += -fopenmp
+FFLAGS += -fpp
+#FFLAGS += -cpp
+FFLAGS += -mcmodel medium
+FFLAGS += -qopenmp
+#FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
 #FFLAGS+=-qopt-prefetch-distance=64,8
