@@ -20,9 +20,10 @@ CFLAGS += -qopenmp
 #CFLAGS += -qopt-report=5
 #CFLAGS += -xMIC-AVX512
 #CFLAGS += -xAVX512
-#CFLAGS += -xCORE-AVX512
-CFLAGS += -xCOMMON-AVX512
+CFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
+#CFLAGS += -xCOMMON-AVX512
 #CFLAGS += -xHost
+#CFLAGS += -march=core-avx2
 CFLAGS += -qopt-prefetch-distance=64,8
 CFLAGS += -qopt-streaming-stores=always
 #CFLAGS+=-no-vec
