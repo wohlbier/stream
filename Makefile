@@ -4,8 +4,8 @@
 # % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 0 ./stream_c/f.exe
 # % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 1 ./stream_c/f.exe
 
-#CC = gcc
-CC = icc
+CC = gcc
+#CC = icc
 #CC := tau $(CC)
 # https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
 # Shown value of 30000000000 (30e9) is too large for my node.
@@ -13,34 +13,40 @@ CC = icc
 CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=1000000000 -DOFFSET=0 -DNTIMES=100 
 CFLAGS += -std=gnu99
 #CFLAGS += -D__TAU_MANUAL_INST__
+
 #icc
-CFLAGS += -mcmodel medium
-CFLAGS += -ffreestanding
-CFLAGS += -qopenmp
+#CFLAGS += -mcmodel medium
+#CFLAGS += -ffreestanding
+#CFLAGS += -qopenmp
 #CFLAGS += -qopt-report=5
 #CFLAGS += -xMIC-AVX512
 #CFLAGS += -xAVX512
 #CFLAGS += -xCORE-AVX512
-CFLAGS += -xCOMMON-AVX512
+#CFLAGS += -xCOMMON-AVX512
 #CFLAGS += -xHost
-CFLAGS += -qopt-prefetch-distance=64,8
-CFLAGS += -qopt-streaming-stores=always
+#CFLAGS += -qopt-prefetch-distance=64,8
+#CFLAGS += -qopt-streaming-stores=always
 #CFLAGS+=-no-vec
+
 # gcc
-#CFLAGS += -fopenmp
-#CFLAGS += -mcmodel=large
+CFLAGS += -fopenmp
+CFLAGS += -mcmodel=large
+# gcc >= 5.x
+#CFLAGS += -march=skylake-avx512
+#CFLAGS += -mavx512f -mavx512cd -fopt-info-vec-all
+CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi
 
 #PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
 #LDFLAGS += -L$(PAPI)/lib -lpapi
 
-#FF = gfortran
-FF = ifort
+FF = gfortran
+#FF = ifort
 FFLAGS = -g -O3
-FFLAGS += -fpp
-#FFLAGS += -cpp
-FFLAGS += -mcmodel medium
-FFLAGS += -qopenmp
+#FFLAGS += -fpp
+FFLAGS += -cpp
+#FFLAGS += -mcmodel medium
+#FFLAGS += -qopenmp
 #FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
