@@ -32,9 +32,15 @@ CFLAGS += -std=gnu99
 CFLAGS += -fopenmp
 CFLAGS += -mcmodel=large
 # gcc >= 5.x
-#CFLAGS += -march=skylake-avx512
-#CFLAGS += -mavx512f -mavx512cd -fopt-info-vec-all
-CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi
+CFLAGS += -march=skylake-avx512
+#CFLAGS += -mavx512f -mavx512cd
+#CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi
+#CFLAGS += -mavx2
+#CFLAGS += -march=native
+#CFLAGS += -funroll-loops
+CFLAGS += -fopt-info-vec-all
+#CFLAGS += -g
+
 
 #PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
@@ -81,8 +87,8 @@ stream_f.exe: stream.f90 mysecond.o
 stream_c.exe: stream.c
 	$(CC) $(CFLAGS) stream.c -o stream_c.exe $(LDFLAGS)
 
-assembler: stream.f90
-	$(FF) $(FFLAGS) -S stream.f90
+assembler: stream.c
+	$(CC) $(CFLAGS) -S $<
 
 clean:
 	-$(RM) -f *~ *.continue.* *.inst.* *.o *.pdb stream_f.exe stream_c.exe
