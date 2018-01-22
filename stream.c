@@ -49,6 +49,8 @@
 #ifdef __PAPI__
 # include <papi.h>
 #endif
+#include <immintrin.h>
+#include <assert.h>
 
 /*-----------------------------------------------------------------------
  * INSTRUCTIONS:
@@ -368,9 +370,27 @@ main()
 #ifdef TUNED
         tuned_STREAM_Triad(scalar);
 #else
+
+#if 0
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
 	    a[j] = b[j]+scalar*c[j];
+#else
+	//test
+#define VEC_LEN 8
+	assert(STREAM_ARRAY_SIZE % VEC_LEN == 0);
+	__m512d va;
+	__m512d vb;
+	__m512d vc;
+	__m512d vs = _mm512_set1_pd(scalar);
+#pragma omp parallel for
+	for (j=0; j<STREAM_ARRAY_SIZE/VEC_LEN; j += VEC_LEN) {
+	  vb = _mm512_load_pd( b + j );
+	  vc = _mm512_load_pd( c + j );
+	  va = _mm512_fmadd_pd( vs, vc, vb);
+	  _mm512_store_pd( a + j, va);	  
+	}
+#endif
 
 #endif
 	times[3][k] = mysecond() - times[3][k];
