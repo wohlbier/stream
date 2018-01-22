@@ -39,7 +39,7 @@ CFLAGS += -march=skylake-avx512
 #CFLAGS += -mavx2
 #CFLAGS += -march=native
 #CFLAGS += -funroll-loops
-CFLAGS += -fopt-info-vec-all
+#CFLAGS += -fopt-info-vec-all
 #CFLAGS += -g
 
 
@@ -54,7 +54,7 @@ FFLAGS = -g -O3
 FFLAGS += -cpp
 #FFLAGS += -mcmodel medium
 #FFLAGS += -qopenmp
-#FFLAGS += -fopenmp
+FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
 #FFLAGS+=-qopt-prefetch-distance=64,8
@@ -85,6 +85,9 @@ stream_f.exe: stream.f90 mysecond.o
 %.o : %.c
 	$(CC) $(CFLAGS) -c $<
 
+# link to Intel OpenMP runtime. Doesn't change results
+# use of different runtime confirmed by setting OMP_DISPLAY_ENV true
+#LDFLAGS += -L /usr/local/install/intel-2018-update1/compilers_and_libraries/linux/lib/intel64_lin -liomp5 -lirc -lpthread
 stream_c.exe: stream.c
 	$(CC) $(CFLAGS) stream.c -o stream_c.exe $(LDFLAGS)
 
