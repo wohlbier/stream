@@ -320,20 +320,7 @@ main()
 #ifdef TUNED
 #define VEC_LEN 8
 	assert(STREAM_ARRAY_SIZE % VEC_LEN == 0);
-
-	//tuned_STREAM_Copy();
-	// putting the openmp pragma inside tuned_STREAM_Copy results in
-	// illegal instruction.
-	{
-	  __m512d va;
-	  __m512d vc;
-#pragma omp parallel for
-	  for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
-	    va = _mm512_load_pd( a + j );
-	    vc = va;
-	    _mm512_store_pd( c + j, vc);
-	  }
-	}
+	tuned_STREAM_Copy();
 #else
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
@@ -344,18 +331,7 @@ main()
 	  /* Scale */
 	times[1][k] = mysecond();
 #ifdef TUNED
-	//tuned_STREAM_Scale(scalar);
-	{
-	  __m512d vb;
-	  __m512d vc;
-	  __m512d vs = _mm512_set1_pd(scalar);
-#pragma omp parallel for
-	  for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
-	    vc = _mm512_load_pd( c + j );
-	    vb = _mm512_mul_pd( vs, vc );
-	    _mm512_store_pd( b + j, vb);
-	  }
-	}
+	tuned_STREAM_Scale(scalar);
 #else
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
@@ -366,19 +342,7 @@ main()
 	  /* Add */
 	times[2][k] = mysecond();
 #ifdef TUNED
-	//tuned_STREAM_Add();
-	{
-	  __m512d va;
-	  __m512d vb;
-	  __m512d vc;
-#pragma omp parallel for
-	  for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
-	    va = _mm512_load_pd( a + j );
-	    vb = _mm512_load_pd( b + j );
-	    vc = _mm512_add_pd( va, vb );
-	    _mm512_store_pd( c + j, vc);
-	  }
-	}
+	tuned_STREAM_Add();
 #else
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
@@ -406,21 +370,7 @@ main()
 #endif
 
 #ifdef TUNED
-	//tuned_STREAM_Triad(scalar);
-	{
-	  __m512d va;
-	  __m512d vb;
-	  __m512d vc;
-	  __m512d vs = _mm512_set1_pd(scalar);
-#pragma omp parallel for
-	  for (j=0; j<STREAM_ARRAY_SIZE; j += VEC_LEN) {
-	    vb = _mm512_load_pd( b + j );
-	    vc = _mm512_load_pd( c + j );
-	    va = _mm512_fmadd_pd( vs, vc, vb);
-	    _mm512_store_pd( a + j, va);	  
-	  }
-	}
-
+	tuned_STREAM_Triad(scalar);
 #else
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
@@ -640,27 +590,29 @@ void checkSTREAMresults ()
 /* stubs for "tuned" versions of the kernels */
 void tuned_STREAM_Copy()
 {
-	ssize_t j;
-	{
-	  __m512d va;
-	  __m512d vc;
-#pragma omp parallel for
-	  for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
-	    va = _mm512_load_pd( a + j );
-	    vc = va;
-	    _mm512_store_pd( c + j, vc);
-	  }
-	}
+  ssize_t j;
+#pragma omp parallel
+  {
+    __m512d va;
+    __m512d vc;
+#pragma omp for
+    for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
+      va = _mm512_load_pd( a + j );
+      vc = va;
+      _mm512_store_pd( c + j, vc);
+    }
+  }
 }
 
 void tuned_STREAM_Scale(STREAM_TYPE scalar)
 {
   ssize_t j;
+  __m512d vs = _mm512_set1_pd(scalar);
+#pragma omp parallel
   {
     __m512d vb;
     __m512d vc;
-    __m512d vs = _mm512_set1_pd(scalar);
-#pragma omp parallel for
+#pragma omp for
     for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
       vc = _mm512_load_pd( c + j );
       vb = _mm512_mul_pd( vs, vc );
@@ -672,11 +624,12 @@ void tuned_STREAM_Scale(STREAM_TYPE scalar)
 void tuned_STREAM_Add()
 {
   ssize_t j;
+#pragma omp parallel
   {
     __m512d va;
     __m512d vb;
     __m512d vc;
-#pragma omp parallel for
+#pragma omp for
     for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
       va = _mm512_load_pd( a + j );
       vb = _mm512_load_pd( b + j );
@@ -689,12 +642,13 @@ void tuned_STREAM_Add()
 void tuned_STREAM_Triad(STREAM_TYPE scalar)
 {
   ssize_t j;
+  __m512d vs = _mm512_set1_pd(scalar);
+#pragma omp parallel
   {
     __m512d va;
     __m512d vb;
     __m512d vc;
-    __m512d vs = _mm512_set1_pd(scalar);
-#pragma omp parallel for
+#pragma omp for
     for (j=0; j<STREAM_ARRAY_SIZE; j += VEC_LEN) {
       vb = _mm512_load_pd( b + j );
       vc = _mm512_load_pd( c + j );
