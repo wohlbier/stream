@@ -49,6 +49,8 @@
 #ifdef __PAPI__
 # include <papi.h>
 #endif
+#include <immintrin.h>
+#include <assert.h>
 
 /*-----------------------------------------------------------------------
  * INSTRUCTIONS:
@@ -316,7 +318,9 @@ main()
 	  /* Copy */
 	times[0][k] = mysecond();
 #ifdef TUNED
-        tuned_STREAM_Copy();
+#define VEC_LEN 8
+	assert(STREAM_ARRAY_SIZE % VEC_LEN == 0);
+	tuned_STREAM_Copy();
 #else
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
@@ -327,7 +331,7 @@ main()
 	  /* Scale */
 	times[1][k] = mysecond();
 #ifdef TUNED
-        tuned_STREAM_Scale(scalar);
+	tuned_STREAM_Scale(scalar);
 #else
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
@@ -338,7 +342,7 @@ main()
 	  /* Add */
 	times[2][k] = mysecond();
 #ifdef TUNED
-        tuned_STREAM_Add();
+	tuned_STREAM_Add();
 #else
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
@@ -366,12 +370,11 @@ main()
 #endif
 
 #ifdef TUNED
-        tuned_STREAM_Triad(scalar);
+	tuned_STREAM_Triad(scalar);
 #else
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
 	    a[j] = b[j]+scalar*c[j];
-
 #endif
 	times[3][k] = mysecond() - times[3][k];
 
@@ -587,34 +590,72 @@ void checkSTREAMresults ()
 /* stubs for "tuned" versions of the kernels */
 void tuned_STREAM_Copy()
 {
-	ssize_t j;
-#pragma omp parallel for
-        for (j=0; j<STREAM_ARRAY_SIZE; j++)
-            c[j] = a[j];
+  ssize_t j;
+#pragma omp parallel
+  {
+    __m512d va;
+    __m512d vc;
+#pragma omp for
+    for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
+      va = _mm512_load_pd( a + j );
+      vc = va;
+      _mm512_store_pd( c + j, vc);
+    }
+  }
 }
 
 void tuned_STREAM_Scale(STREAM_TYPE scalar)
 {
-	ssize_t j;
-#pragma omp parallel for
-	for (j=0; j<STREAM_ARRAY_SIZE; j++)
-	    b[j] = scalar*c[j];
+  ssize_t j;
+  __m512d vs = _mm512_set1_pd(scalar);
+#pragma omp parallel
+  {
+    __m512d vb;
+    __m512d vc;
+#pragma omp for
+    for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
+      vc = _mm512_load_pd( c + j );
+      vb = _mm512_mul_pd( vs, vc );
+      _mm512_store_pd( b + j, vb);
+    }
+  }
 }
 
 void tuned_STREAM_Add()
 {
-	ssize_t j;
-#pragma omp parallel for
-	for (j=0; j<STREAM_ARRAY_SIZE; j++)
-	    c[j] = a[j]+b[j];
+  ssize_t j;
+#pragma omp parallel
+  {
+    __m512d va;
+    __m512d vb;
+    __m512d vc;
+#pragma omp for
+    for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
+      va = _mm512_load_pd( a + j );
+      vb = _mm512_load_pd( b + j );
+      vc = _mm512_add_pd( va, vb );
+      _mm512_store_pd( c + j, vc);
+    }
+  }
 }
 
 void tuned_STREAM_Triad(STREAM_TYPE scalar)
 {
-	ssize_t j;
-#pragma omp parallel for
-	for (j=0; j<STREAM_ARRAY_SIZE; j++)
-	    a[j] = b[j]+scalar*c[j];
+  ssize_t j;
+  __m512d vs = _mm512_set1_pd(scalar);
+#pragma omp parallel
+  {
+    __m512d va;
+    __m512d vb;
+    __m512d vc;
+#pragma omp for
+    for (j=0; j<STREAM_ARRAY_SIZE; j += VEC_LEN) {
+      vb = _mm512_load_pd( b + j );
+      vc = _mm512_load_pd( c + j );
+      va = _mm512_fmadd_pd( vs, vc, vb);
+      _mm512_store_pd( a + j, va);	  
+    }
+  }
 }
 /* end of stubs for the "tuned" versions of the kernels */
 #endif

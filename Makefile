@@ -10,7 +10,7 @@ CC = icc
 # https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
-CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=1000000000 -DOFFSET=0 -DNTIMES=100 
+CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 -DTUNED
 CFLAGS += -std=gnu99
 #CFLAGS += -D__TAU_MANUAL_INST__
 #icc
@@ -61,8 +61,8 @@ FFLAGS += -qopenmp
 #FFLAGS+=-D__ITT_NOTIFY__ -I/work1/compiler-beta/vtune_amplifier_2018/include/intel64
 #LDFLAGS+=-L/work1/compiler-beta/vtune_amplifier_2018/lib64 -littnotify
 
-#all: stream_f.exe stream_c.exe assembler
-all: stream_f.exe stream_c.exe
+all: stream_f.exe stream_c.exe assembler
+#all: stream_f.exe stream_c.exe
 #all: stream_f.exe assembler
 #all: stream_f.exe
 
@@ -76,8 +76,10 @@ stream_f.exe: stream.f90 mysecond.o
 stream_c.exe: stream.c
 	$(CC) $(CFLAGS) stream.c -o stream_c.exe $(LDFLAGS)
 
-assembler: stream.f90
-	$(FF) $(FFLAGS) -S stream.f90
+ASM_FLAGS = -S -fsource-asm -g
+assembler: stream.c stream.f90
+	$(CC) $(CFLAGS) $(ASM_FLAGS) stream.c -o stream_c.s
+	$(FF) $(FFLAGS) $(ASM_FLAGS) stream.f90 -o stream_f.s
 
 clean:
 	-$(RM) -f *~ *.continue.* *.inst.* *.o *.pdb stream_f.exe stream_c.exe
