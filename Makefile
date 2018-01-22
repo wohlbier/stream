@@ -4,8 +4,9 @@
 # % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 0 ./stream_c/f.exe
 # % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 1 ./stream_c/f.exe
 
-CC = gcc
+#CC = gcc
 #CC = icc
+CC = clang
 #CC := tau $(CC)
 # https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
 # Shown value of 30000000000 (30e9) is too large for my node.
@@ -29,6 +30,19 @@ CFLAGS += -std=gnu99
 #CFLAGS+=-no-vec
 
 # gcc
+#CFLAGS += -fopenmp
+#CFLAGS += -mcmodel=large
+# gcc >= 5.x
+#CFLAGS += -march=skylake-avx512
+#CFLAGS += -mavx512f -mavx512cd
+#CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi
+#CFLAGS += -mavx2
+#CFLAGS += -march=native
+#CFLAGS += -funroll-loops
+#CFLAGS += -fopt-info-vec-all
+#CFLAGS += -g
+
+# clang
 CFLAGS += -fopenmp
 CFLAGS += -mcmodel=large
 # gcc >= 5.x
@@ -38,7 +52,7 @@ CFLAGS += -march=skylake-avx512
 #CFLAGS += -mavx2
 #CFLAGS += -march=native
 #CFLAGS += -funroll-loops
-CFLAGS += -fopt-info-vec-all
+#CFLAGS += -fopt-info-vec-all
 #CFLAGS += -g
 
 
@@ -53,9 +67,10 @@ FFLAGS = -g -O3
 FFLAGS += -cpp
 #FFLAGS += -mcmodel medium
 #FFLAGS += -qopenmp
-#FFLAGS += -fopenmp
+FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
+FFLAGS += -march=skylake-avx512
 #FFLAGS+=-qopt-prefetch-distance=64,8
 #FFLAGS+=-qopt-streaming-stores=always
 #FFLAGS+=-qopt-prefetch=0
@@ -72,8 +87,8 @@ FFLAGS += -cpp
 #FFLAGS+=-D__ITT_NOTIFY__ -I/work1/compiler-beta/vtune_amplifier_2018/include/intel64
 #LDFLAGS+=-L/work1/compiler-beta/vtune_amplifier_2018/lib64 -littnotify
 
-#all: stream_f.exe stream_c.exe assembler
-all: stream_f.exe stream_c.exe
+all: stream_f.exe stream_c.exe assembler
+#all: stream_f.exe stream_c.exe
 #all: stream_f.exe assembler
 #all: stream_f.exe
 
@@ -87,8 +102,11 @@ stream_f.exe: stream.f90 mysecond.o
 stream_c.exe: stream.c
 	$(CC) $(CFLAGS) stream.c -o stream_c.exe $(LDFLAGS)
 
-assembler: stream.c
-	$(CC) $(CFLAGS) -S $<
+#ASM_FLAGS = -S
+ASM_FLAGS = -S -fverbose-asm -g
+assembler: stream.c stream.f90
+	$(CC) $(CFLAGS) $(ASM_FLAGS) stream.c -o stream_c.s
+	$(FF) $(FFLAGS) $(ASM_FLAGS) stream.f90 -o stream_f.s
 
 clean:
 	-$(RM) -f *~ *.continue.* *.inst.* *.o *.pdb stream_f.exe stream_c.exe
