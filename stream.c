@@ -204,7 +204,7 @@ static double	bytes[4] = {
 extern double mysecond();
 extern void checkSTREAMresults();
 #ifdef TUNED
-extern inline void tuned_STREAM_Copy();
+extern void tuned_STREAM_Copy();
 extern void tuned_STREAM_Scale(STREAM_TYPE scalar);
 extern void tuned_STREAM_Add();
 extern void tuned_STREAM_Triad(STREAM_TYPE scalar);
