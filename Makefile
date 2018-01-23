@@ -11,7 +11,7 @@ CC = clang
 # https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
-CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=1000000000 -DOFFSET=0 -DNTIMES=100 
+CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 -DTUNED
 CFLAGS += -std=gnu99
 #CFLAGS += -D__TAU_MANUAL_INST__
 
@@ -47,13 +47,14 @@ CFLAGS += -fopenmp
 CFLAGS += -mcmodel=large
 # gcc >= 5.x
 CFLAGS += -march=skylake-avx512
-#CFLAGS += -mavx512f -mavx512cd
-#CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi
+CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
+CFLAGS += -mfma
 #CFLAGS += -mavx2
 #CFLAGS += -march=native
 #CFLAGS += -funroll-loops
 #CFLAGS += -fopt-info-vec-all
 #CFLAGS += -g
+#CFLAGS += -fno-tree-vectorize
 
 
 #PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
