@@ -34,9 +34,10 @@ CFLAGS += -fopenmp
 CFLAGS += -mcmodel=large
 # gcc >= 5.x
 CFLAGS += -march=skylake-avx512
-#CFLAGS += -mavx512f -mavx512cd
-#CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi
+CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
+CFLAGS += -mfma
 #CFLAGS += -mavx2
+#CFLAGS += -fno-tree-vectorize
 #CFLAGS += -march=native
 #CFLAGS += -funroll-loops
 #CFLAGS += -fopt-info-vec-all
@@ -57,8 +58,13 @@ FFLAGS += -cpp
 FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
-#FFLAGS+=-qopt-prefetch-distance=64,8
-#FFLAGS+=-qopt-streaming-stores=always
+FFLAGS += -march=skylake-avx512
+FFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
+FFLAGS += -mfma
+#FFLAGS += -mavx2
+#FFLAGS += -fno-tree-vectorize
+#FFLAGS += -qopt-prefetch-distance=64,8
+#FFLAGS += -qopt-streaming-stores=always
 #FFLAGS+=-qopt-prefetch=0
 #FFLAGS+=-no-vec
 #FFLAGS+=-D__PREFETCH__
