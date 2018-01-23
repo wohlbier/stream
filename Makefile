@@ -61,8 +61,9 @@ CFLAGS += -mfma
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
 #LDFLAGS += -L$(PAPI)/lib -lpapi
 
-FF = gfortran
+#FF = gfortran
 #FF = ifort
+FF = flang
 FFLAGS = -g -O3
 #FFLAGS += -fpp
 FFLAGS += -cpp
@@ -72,10 +73,12 @@ FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
 FFLAGS += -march=skylake-avx512
+#FFLAGS += -mavx2
 #FFLAGS+=-qopt-prefetch-distance=64,8
 #FFLAGS+=-qopt-streaming-stores=always
 #FFLAGS+=-qopt-prefetch=0
 #FFLAGS+=-no-vec
+#FFLAGS += -fno-tree-vectorize
 #FFLAGS+=-D__PREFETCH__
 #FFLAGS+=-D__INCREASE_AI__
 
