@@ -4,15 +4,15 @@
 # % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 0 ./stream_c/f.exe
 # % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 1 ./stream_c/f.exe
 
-#CC = gcc
+CC = gcc
 #CC = icc
-CC = cc
+#CC = cc
 #CC := tau $(CC)
 # https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
 CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 
-#CFLAGS += -std=gnu99
+CFLAGS += -std=gnu99
 #CFLAGS += -D__TAU_MANUAL_INST__
 #icc
 #CFLAGS += -mcmodel medium
@@ -24,24 +24,24 @@ CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES
 #CFLAGS += -qopt-prefetch-distance=64,8 -qopt-streaming-stores=always
 #CFLAGS+=-no-vec
 # gcc
-#CFLAGS += -fopenmp
-#CFLAGS += -mcmodel=large
-CFLAGS += -homp
-CFLAGS += -hdisplay_opt
+CFLAGS += -fopenmp
+CFLAGS += -mcmodel=large
+#CFLAGS += -homp
+#CFLAGS += -hdisplay_opt
 
 #PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
 #LDFLAGS += -L$(PAPI)/lib -lpapi
 
-#FF = gfortran
+FF = gfortran
 #FF = ifort
-FF = ftn
+#FF = ftn
 FFLAGS = -g -O3
 #FFLAGS += -fpp
-#FFLAGS += -cpp
+FFLAGS += -cpp
 #FFLAGS += -mcmodel medium
 #FFLAGS += -qopenmp
-#FFLAGS += -fopenmp
+FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
 #FFLAGS+=-qopt-prefetch-distance=64,8
@@ -50,9 +50,9 @@ FFLAGS = -g -O3
 #FFLAGS+=-no-vec
 #FFLAGS+=-D__PREFETCH__
 #FFLAGS+=-D__INCREASE_AI__
-FFLAGS += -eF
-FFLAGS += -homp
-FFLAGS += -hpic
+#FFLAGS += -eF
+#FFLAGS += -homp
+#FFLAGS += -hpic
 
 #FF := tau $(FF)
 #FFLAGS += -D__TAU_MANUAL_INST__
