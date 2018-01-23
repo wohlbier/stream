@@ -49,6 +49,8 @@
 #ifdef __PAPI__
 # include <papi.h>
 #endif
+#include <assert.h>
+#include <arm_neon.h>
 
 /*-----------------------------------------------------------------------
  * INSTRUCTIONS:
@@ -316,7 +318,9 @@ main()
 	  /* Copy */
 	times[0][k] = mysecond();
 #ifdef TUNED
-        tuned_STREAM_Copy();
+#define VEC_LEN 2
+	assert(STREAM_ARRAY_SIZE % VEC_LEN == 0);
+	tuned_STREAM_Copy();
 #else
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
@@ -327,7 +331,7 @@ main()
 	  /* Scale */
 	times[1][k] = mysecond();
 #ifdef TUNED
-        tuned_STREAM_Scale(scalar);
+	tuned_STREAM_Scale(scalar);
 #else
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
@@ -338,7 +342,7 @@ main()
 	  /* Add */
 	times[2][k] = mysecond();
 #ifdef TUNED
-        tuned_STREAM_Add();
+	tuned_STREAM_Add();
 #else
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
@@ -366,12 +370,11 @@ main()
 #endif
 
 #ifdef TUNED
-        tuned_STREAM_Triad(scalar);
+	tuned_STREAM_Triad(scalar);
 #else
 #pragma omp parallel for
 	for (j=0; j<STREAM_ARRAY_SIZE; j++)
 	    a[j] = b[j]+scalar*c[j];
-
 #endif
 	times[3][k] = mysecond() - times[3][k];
 
@@ -587,34 +590,72 @@ void checkSTREAMresults ()
 /* stubs for "tuned" versions of the kernels */
 void tuned_STREAM_Copy()
 {
-	ssize_t j;
-#pragma omp parallel for
-        for (j=0; j<STREAM_ARRAY_SIZE; j++)
-            c[j] = a[j];
+  ssize_t j;
+#pragma omp parallel
+  {
+    float64x2_t va;
+    float64x2_t vc;
+#pragma omp for
+    for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
+      va = vld1q_f64( a + j );
+      vc = va;
+      vst1q_f64( c + j, vc);
+    }
+  }
 }
 
 void tuned_STREAM_Scale(STREAM_TYPE scalar)
 {
-	ssize_t j;
-#pragma omp parallel for
-	for (j=0; j<STREAM_ARRAY_SIZE; j++)
-	    b[j] = scalar*c[j];
+  ssize_t j;
+  float64x2_t vs = vld1q_dup_f64(&scalar);
+#pragma omp parallel
+  {
+    float64x2_t vb;
+    float64x2_t vc;
+#pragma omp for
+    for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
+      vc = vld1q_f64( c + j );
+      vb = vmulq_f64( vs, vc );
+      vst1q_f64( b + j, vb);
+    }
+  }
 }
 
 void tuned_STREAM_Add()
 {
-	ssize_t j;
-#pragma omp parallel for
-	for (j=0; j<STREAM_ARRAY_SIZE; j++)
-	    c[j] = a[j]+b[j];
+  ssize_t j;
+#pragma omp parallel
+  {
+    float64x2_t va;
+    float64x2_t vb;
+    float64x2_t vc;
+#pragma omp for
+    for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
+      va = vld1q_f64( a + j );
+      vb = vld1q_f64( b + j );
+      vc = vaddq_f64( va, vb );
+      vst1q_f64( c + j, vc);
+    }
+  }
 }
 
 void tuned_STREAM_Triad(STREAM_TYPE scalar)
 {
-	ssize_t j;
-#pragma omp parallel for
-	for (j=0; j<STREAM_ARRAY_SIZE; j++)
-	    a[j] = b[j]+scalar*c[j];
+  ssize_t j;
+  float64x2_t vs = vld1q_dup_f64(&scalar);
+#pragma omp parallel
+  {
+    float64x2_t va;
+    float64x2_t vb;
+    float64x2_t vc;
+#pragma omp for
+    for (j=0; j<STREAM_ARRAY_SIZE; j += VEC_LEN) {
+      vb = vld1q_f64( b + j );
+      vc = vld1q_f64( c + j );
+      va = vmlaq_f64( vb, vs, vc);
+      vst1q_f64( a + j, va);
+    }
+  }
 }
 /* end of stubs for the "tuned" versions of the kernels */
 #endif
