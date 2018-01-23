@@ -26,7 +26,7 @@ CFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
 #CFLAGS += -march=core-avx2
 CFLAGS += -qopt-prefetch-distance=64,8
 CFLAGS += -qopt-streaming-stores=always
-#CFLAGS+=-no-vec
+#CFLAGS += -no-vec
 # gcc
 #CFLAGS += -fopenmp
 #CFLAGS += -mcmodel=large
@@ -45,10 +45,12 @@ FFLAGS += -qopenmp
 #FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
-#FFLAGS+=-qopt-prefetch-distance=64,8
-#FFLAGS+=-qopt-streaming-stores=always
+FFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
+#FFLAGS += -march=core-avx2
+FFLAGS +=-qopt-prefetch-distance=64,8
+FFLAGS +=-qopt-streaming-stores=always
 #FFLAGS+=-qopt-prefetch=0
-#FFLAGS+=-no-vec
+#FFLAGS += -no-vec
 #FFLAGS+=-D__PREFETCH__
 #FFLAGS+=-D__INCREASE_AI__
 
