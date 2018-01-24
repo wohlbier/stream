@@ -4,7 +4,8 @@
 # % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 0 ./stream_c/f.exe
 # % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 1 ./stream_c/f.exe
 
-CC = gcc
+#CC = gcc
+CC = armclang
 #CC = icc
 #CC = cc
 #CC := tau $(CC)
@@ -26,7 +27,7 @@ CFLAGS += -std=gnu99
 # gcc
 CFLAGS += -fopenmp
 CFLAGS += -mcmodel=large
-CFLAGS += -march=native
+#CFLAGS += -march=native
 #CFLAGS += -homp
 #CFLAGS += -hdisplay_opt
 
@@ -34,7 +35,8 @@ CFLAGS += -march=native
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
 #LDFLAGS += -L$(PAPI)/lib -lpapi
 
-FF = gfortran
+#FF = gfortran
+FF = armflang
 #FF = ifort
 #FF = ftn
 FFLAGS = -g -O3
