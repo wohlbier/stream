@@ -53,6 +53,7 @@ FFLAGS = -g -O3
 FFLAGS += -eF
 FFLAGS += -homp
 FFLAGS += -hpic
+FFLAGS += -hdisplay_opt
 
 #FF := tau $(FF)
 #FFLAGS += -D__TAU_MANUAL_INST__
