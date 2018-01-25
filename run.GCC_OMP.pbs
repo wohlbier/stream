@@ -1,0 +1,18 @@
+#!/bin/tcsh
+
+#PBS -N stream
+#PBS -l nodes=1:ppn=56
+#PBS -l walltime=10:00
+#PBS -j oe
+
+module load gcc/7.2
+
+cd $PBS_O_WORKDIR
+setenv OMP_DISPLAY_ENV true
+setenv OMP_NUM_THREADS 28
+#setenv OMP_NUM_THREADS 1
+setenv OMP_PROC_BIND close
+setenv OMP_PLACES cores
+
+./stream_f.exe
+./stream_c.exe
