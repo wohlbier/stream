@@ -5,7 +5,7 @@
 #PBS -l walltime=10:00
 #PBS -j oe
 
-module load openmpi/gcc/7.2
+module load openmpi/aocc/1.1
 
 cd $PBS_O_WORKDIR
 setenv OMP_DISPLAY_ENV true
