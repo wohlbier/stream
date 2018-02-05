@@ -23,7 +23,7 @@ CFLAGS += -qopenmp
 #CFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
 #CFLAGS += -xCOMMON-AVX512
 #CFLAGS += -xHost
-#CFLAGS += -march=core-avx2
+CFLAGS += -march=core-avx2
 CFLAGS += -qopt-prefetch-distance=64,8
 CFLAGS += -qopt-streaming-stores=always
 #CFLAGS += -no-vec
@@ -46,7 +46,7 @@ FFLAGS += -qopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
 #FFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
-#FFLAGS += -march=core-avx2
+FFLAGS += -march=core-avx2
 FFLAGS +=-qopt-prefetch-distance=64,8
 FFLAGS +=-qopt-streaming-stores=always
 #FFLAGS+=-qopt-prefetch=0
