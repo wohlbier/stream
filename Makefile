@@ -10,7 +10,7 @@ CC = icc
 # https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
-CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 -DTUNED
+CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 #-DTUNED
 CFLAGS += -std=gnu99
 #CFLAGS += -D__TAU_MANUAL_INST__
 #icc
@@ -20,7 +20,7 @@ CFLAGS += -qopenmp
 #CFLAGS += -qopt-report=5
 #CFLAGS += -xMIC-AVX512
 #CFLAGS += -xAVX512
-CFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
+#CFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
 #CFLAGS += -xCOMMON-AVX512
 #CFLAGS += -xHost
 #CFLAGS += -march=core-avx2
@@ -45,7 +45,7 @@ FFLAGS += -qopenmp
 #FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
-FFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
+#FFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
 #FFLAGS += -march=core-avx2
 FFLAGS +=-qopt-prefetch-distance=64,8
 FFLAGS +=-qopt-streaming-stores=always

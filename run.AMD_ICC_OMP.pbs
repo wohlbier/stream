@@ -1,21 +1,22 @@
 #!/bin/tcsh
 
 #PBS -N stream
-#PBS -l nodes=1:ppn=72:skylake
+#PBS -l nodes=1:ppn=16
 #PBS -l walltime=10:00
 #PBS -j oe
 
 module load intelmpi/18.0
+unlimit
 
 cd $PBS_O_WORKDIR
 setenv OMP_DISPLAY_ENV true
 
 #setenv OMP_NUM_THREADS 1
-setenv OMP_NUM_THREADS 18
-#setenv OMP_NUM_THREADS 36
+setenv OMP_NUM_THREADS 16
+#setenv OMP_NUM_THREADS 32
 
 setenv OMP_PROC_BIND close
 setenv OMP_PLACES cores
 
-numactl -C 0-17 ./stream_f.exe
-numactl -C 0-17 ./stream_c.exe
+numactl -C 0-15 ./stream_f.exe
+numactl -C 0-15 ./stream_c.exe
