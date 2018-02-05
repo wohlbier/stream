@@ -58,8 +58,8 @@ FFLAGS += -cpp
 FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
-FFLAGS += -march=skylake-avx512
-FFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
+#FFLAGS += -march=skylake-avx512
+#FFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
 FFLAGS += -mfma
 #FFLAGS += -mavx2
 #FFLAGS += -fno-tree-vectorize
