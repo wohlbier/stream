@@ -11,7 +11,7 @@ CC = gcc
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
 #CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=1000000000 -DOFFSET=0 -DNTIMES=100 -DTUNED
-CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 -DTUNED
+CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 #-DTUNED
 CFLAGS += -std=gnu99
 #CFLAGS += -D__TAU_MANUAL_INST__
 
@@ -33,8 +33,8 @@ CFLAGS += -std=gnu99
 CFLAGS += -fopenmp
 CFLAGS += -mcmodel=large
 # gcc >= 5.x
-CFLAGS += -march=skylake-avx512
-CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
+#CFLAGS += -march=skylake-avx512
+#CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
 CFLAGS += -mfma
 #CFLAGS += -mavx2
 #CFLAGS += -fno-tree-vectorize
