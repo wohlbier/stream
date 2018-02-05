@@ -36,7 +36,7 @@ CFLAGS += -mcmodel=large
 #CFLAGS += -march=skylake-avx512
 #CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
 CFLAGS += -mfma
-#CFLAGS += -mavx2
+CFLAGS += -mavx2
 #CFLAGS += -fno-tree-vectorize
 #CFLAGS += -march=native
 #CFLAGS += -funroll-loops
@@ -61,7 +61,7 @@ FFLAGS += -fopenmp
 #FFLAGS += -march=skylake-avx512
 #FFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
 FFLAGS += -mfma
-#FFLAGS += -mavx2
+FFLAGS += -mavx2
 #FFLAGS += -fno-tree-vectorize
 #FFLAGS += -qopt-prefetch-distance=64,8
 #FFLAGS += -qopt-streaming-stores=always

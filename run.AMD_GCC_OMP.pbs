@@ -1,12 +1,11 @@
 #!/bin/tcsh
 
 #PBS -N stream
-#PBS -l nodes=1:ppn=16
+#PBS -l nodes=1:ppn=64
 #PBS -l walltime=10:00
 #PBS -j oe
 
 module load openmpi/gcc/7.2
-unlimit
 
 cd $PBS_O_WORKDIR
 setenv OMP_DISPLAY_ENV true
