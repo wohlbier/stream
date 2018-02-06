@@ -10,8 +10,7 @@ CC = gcc
 # https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
-#CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=1000000000 -DOFFSET=0 -DNTIMES=100 -DTUNED
-CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 -DTUNED
+CFLAGS = -g -O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 #-DTUNED
 CFLAGS += -std=gnu99
 #CFLAGS += -D__TAU_MANUAL_INST__
 
@@ -34,8 +33,9 @@ CFLAGS += -fopenmp
 CFLAGS += -mcmodel=large
 # gcc >= 5.x
 CFLAGS += -march=skylake-avx512
-CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
+CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi
 CFLAGS += -mfma
+CFLAGS += -Ofast
 #CFLAGS += -mavx2
 #CFLAGS += -fno-tree-vectorize
 #CFLAGS += -march=native
@@ -59,8 +59,9 @@ FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
 FFLAGS += -march=skylake-avx512
-FFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
+FFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi
 FFLAGS += -mfma
+FFLAGS += -Ofast
 #FFLAGS += -mavx2
 #FFLAGS += -fno-tree-vectorize
 #FFLAGS += -qopt-prefetch-distance=64,8
