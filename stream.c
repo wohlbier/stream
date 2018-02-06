@@ -599,7 +599,8 @@ void tuned_STREAM_Copy()
     for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
       va = _mm512_load_pd( a + j );
       vc = va;
-      _mm512_store_pd( c + j, vc);
+      //_mm512_store_pd( c + j, vc);
+      _mm512_stream_pd( c + j, vc);
     }
   }
 }
@@ -616,7 +617,8 @@ void tuned_STREAM_Scale(STREAM_TYPE scalar)
     for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
       vc = _mm512_load_pd( c + j );
       vb = _mm512_mul_pd( vs, vc );
-      _mm512_store_pd( b + j, vb);
+      //_mm512_store_pd( b + j, vb);
+      _mm512_stream_pd( b + j, vb);
     }
   }
 }
@@ -634,7 +636,8 @@ void tuned_STREAM_Add()
       va = _mm512_load_pd( a + j );
       vb = _mm512_load_pd( b + j );
       vc = _mm512_add_pd( va, vb );
-      _mm512_store_pd( c + j, vc);
+      //_mm512_store_pd( c + j, vc);
+      _mm512_stream_pd( c + j, vc);
     }
   }
 }
@@ -653,7 +656,8 @@ void tuned_STREAM_Triad(STREAM_TYPE scalar)
       vb = _mm512_load_pd( b + j );
       vc = _mm512_load_pd( c + j );
       va = _mm512_fmadd_pd( vs, vc, vb);
-      _mm512_store_pd( a + j, va);	  
+      //_mm512_store_pd( a + j, va);
+      _mm512_stream_pd( a + j, va);
     }
   }
 }
