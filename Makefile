@@ -36,12 +36,14 @@ CFLAGS += -mcmodel=large
 # gcc >= 5.x
 #CFLAGS += -march=skylake-avx512
 #CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
-CFLAGS += -mfma
-CFLAGS += -mavx2
+CFLAGS += -mtune=native
+#CFLAGS += -mfma
+#CFLAGS += -mavx2
+#CFLAGS += -mllvm -force-vector-width=4
 #CFLAGS += -fno-tree-vectorize
 #CFLAGS += -march=native
 #CFLAGS += -funroll-loops
-#CFLAGS += -fopt-info-vec-all
+CFLAGS += -Rpass=\(loop-vectorize\|loop-unroll\|licm\)
 #CFLAGS += -g
 
 
@@ -61,13 +63,16 @@ FFLAGS += -fopenmp
 #FFLAGS += -xMIC-AVX512
 #FFLAGS += -march=skylake-avx512
 #FFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
-FFLAGS += -mfma
-FFLAGS += -mavx2
+#FFLAGS += -mfma
+#FFLAGS += -mavx2
 #FFLAGS += -fno-tree-vectorize
 #FFLAGS += -qopt-prefetch-distance=64,8
 #FFLAGS += -qopt-streaming-stores=always
 #FFLAGS+=-qopt-prefetch=0
 #FFLAGS+=-no-vec
+#FFLAGS += -fopt-info-vec-all
+FFLAGS += -mtune=native
+FFLAGS += -ftree-vectorizer-verbose=2
 #FFLAGS+=-D__PREFETCH__
 #FFLAGS+=-D__INCREASE_AI__
 
