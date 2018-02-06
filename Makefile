@@ -53,12 +53,16 @@ CFLAGS += -Rpass=\(loop-vectorize\|loop-unroll\|licm\)
 
 FF = gfortran
 #FF = ifort
-FFLAGS = -g -O3
-#FFLAGS += -fpp
+FFLAGS  = -g -O3
 FFLAGS += -cpp
+FFLAGS += -fopenmp
+#FFLAGS += -I$(AOCCDIR)/include
+FFLAGS += -fplugin=/usr/local/install/aocc-1.1/AOCC-1.1-FortranPlugin/dragonegg.so
+#FFLAGS += -fplugin-arg-dragonegg-llvm-option="[-funroll-loops,-fdefault-integer-8,-ffast-math]"
+#FFLAGS += -g -O3
+#FFLAGS += -fpp
 #FFLAGS += -mcmodel medium
 #FFLAGS += -qopenmp
-FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
 #FFLAGS += -march=skylake-avx512
@@ -71,8 +75,8 @@ FFLAGS += -fopenmp
 #FFLAGS+=-qopt-prefetch=0
 #FFLAGS+=-no-vec
 #FFLAGS += -fopt-info-vec-all
-FFLAGS += -mtune=native
-FFLAGS += -ftree-vectorizer-verbose=2
+#FFLAGS += -mtune=native
+#FFLAGS += -ftree-vectorizer-verbose=2
 #FFLAGS+=-D__PREFETCH__
 #FFLAGS+=-D__INCREASE_AI__
 
