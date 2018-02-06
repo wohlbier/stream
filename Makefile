@@ -10,26 +10,21 @@ CC = icc
 # https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
-CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 -DTUNED
-CFLAGS += -std=gnu99
+CFLAGS  = -g -O3 -qopenmp
+CFLAGS += -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 #-DTUNED
+CFLAGS += -std=gnu99 -mcmodel medium
 #CFLAGS += -D__TAU_MANUAL_INST__
-#icc
-CFLAGS += -mcmodel medium
-CFLAGS += -ffreestanding
-CFLAGS += -qopenmp
+#CFLAGS += -ffreestanding
 #CFLAGS += -qopt-report=5
 #CFLAGS += -xMIC-AVX512
 #CFLAGS += -xAVX512
-CFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
+CFLAGS += -xcore-avx512 -qopt-zmm-usage=high
 #CFLAGS += -xCOMMON-AVX512
 #CFLAGS += -xHost
 #CFLAGS += -march=core-avx2
-CFLAGS += -qopt-prefetch-distance=64,8
-CFLAGS += -qopt-streaming-stores=always
+#CFLAGS += -qopt-prefetch-distance=64,8
+#CFLAGS += -qopt-streaming-stores=always
 #CFLAGS += -no-vec
-# gcc
-#CFLAGS += -fopenmp
-#CFLAGS += -mcmodel=large
 
 #PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
@@ -37,18 +32,17 @@ CFLAGS += -qopt-streaming-stores=always
 
 #FF = gfortran
 FF = ifort
-FFLAGS = -g -O3
+FFLAGS = -g -O3 -qopenmp
 FFLAGS += -fpp
 #FFLAGS += -cpp
 FFLAGS += -mcmodel medium
-FFLAGS += -qopenmp
 #FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
-FFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
+FFLAGS += -xcore-avx512 -qopt-zmm-usage=high
 #FFLAGS += -march=core-avx2
-FFLAGS +=-qopt-prefetch-distance=64,8
-FFLAGS +=-qopt-streaming-stores=always
+#FFLAGS +=-qopt-prefetch-distance=64,8
+#FFLAGS +=-qopt-streaming-stores=always
 #FFLAGS+=-qopt-prefetch=0
 #FFLAGS += -no-vec
 #FFLAGS+=-D__PREFETCH__
