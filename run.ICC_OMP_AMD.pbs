@@ -6,7 +6,6 @@
 #PBS -j oe
 
 module load openmpi/intel/18.0
-unlimit
 
 cd $PBS_O_WORKDIR
 setenv OMP_DISPLAY_ENV true
@@ -14,9 +13,6 @@ setenv OMP_DISPLAY_ENV true
 #setenv OMP_NUM_THREADS 1
 setenv OMP_NUM_THREADS 16
 #setenv OMP_NUM_THREADS 32
-
-setenv OMP_PROC_BIND close
-setenv OMP_PLACES cores
 
 numactl -C 0-15 ./stream_f.exe
 numactl -C 0-15 ./stream_c.exe
