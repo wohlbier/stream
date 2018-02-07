@@ -79,7 +79,7 @@ assembler: stream.c stream.f90
 
 clean:
 	-$(RM) -f *~ *.continue.* *.inst.* *.o *.pdb stream_f.exe stream_c.exe
-	-$(RM) -f *.optrpt *.s
+	-$(RM) -f *.optrpt stream_c.s stream_f.s
 
 # an example of a more complex build line for the Intel icc compiler
 stream.icc: stream.c
