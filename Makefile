@@ -33,9 +33,9 @@ CFLAGS += -fopenmp
 CFLAGS += -mcmodel=large
 # gcc >= 5.x
 CFLAGS += -march=skylake-avx512
-CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi
-CFLAGS += -mfma
-CFLAGS += -Ofast
+#CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi
+#CFLAGS += -mfma
+#CFLAGS += -Ofast
 #CFLAGS += -mavx2
 #CFLAGS += -fno-tree-vectorize
 #CFLAGS += -march=native
@@ -59,9 +59,9 @@ FFLAGS += -fopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
 FFLAGS += -march=skylake-avx512
-FFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi
-FFLAGS += -mfma
-FFLAGS += -Ofast
+#FFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi
+#FFLAGS += -mfma
+#FFLAGS += -Ofast
 #FFLAGS += -mavx2
 #FFLAGS += -fno-tree-vectorize
 #FFLAGS += -qopt-prefetch-distance=64,8
