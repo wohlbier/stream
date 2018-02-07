@@ -53,15 +53,16 @@ CFLAGS += -Rpass=\(loop-vectorize\|loop-unroll\|licm\)
 
 FF = gfortran
 #FF = ifort
-FFLAGS  = -g -O3
+FFLAGS  = -g -O3 -fopenmp
 FFLAGS += -cpp
-FFLAGS += -fopenmp
 #FFLAGS += -I$(AOCCDIR)/include
 FFLAGS += -fplugin=/usr/local/install/aocc-1.1/AOCC-1.1-FortranPlugin/dragonegg.so
-#FFLAGS += -fplugin-arg-dragonegg-llvm-option="[-funroll-loops,-fdefault-integer-8,-ffast-math]"
+#FFLAGS += -fplugin-arg-dragonegg-llvm-option="-funroll-loops,-fdefault-integer-8,-ffast-math"
+#FFLAGS += -fplugin-arg-dragonegg-llvm-option="-fopenmp"
+FFLAGS += -madx -O2 -mcmodel=large
+#FFLAGS += -fopenmp
 #FFLAGS += -g -O3
 #FFLAGS += -fpp
-#FFLAGS += -mcmodel medium
 #FFLAGS += -qopenmp
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
@@ -108,7 +109,7 @@ stream_c.exe: stream.c
 	$(CC) $(CFLAGS) stream.c -o stream_c.exe $(LDFLAGS)
 
 #ASM_FLAGS = -S
-ASM_FLAGS = -S -fverbose-asm -g
+ASM_FLAGS = -S -g
 assembler: stream.c stream.f90
 	$(CC) $(CFLAGS) $(ASM_FLAGS) stream.c -o stream_c.s
 	$(FF) $(FFLAGS) $(ASM_FLAGS) stream.f90 -o stream_f.s
