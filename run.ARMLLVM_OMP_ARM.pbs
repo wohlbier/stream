@@ -9,10 +9,19 @@ module load ThunderX2CN99/SUSE/12/arm-hpc-compiler-18.1/armpl_time_limited/18.1.
 
 cd $PBS_O_WORKDIR
 setenv OMP_DISPLAY_ENV true
-setenv OMP_NUM_THREADS 28
-#setenv OMP_NUM_THREADS 1
 setenv OMP_PROC_BIND close
 setenv OMP_PLACES cores
 
+
+setenv OMP_NUM_THREADS 1
+./stream_f.exe
+./stream_c.exe
+
+setenv OMP_NUM_THREADS 28
+./stream_f.exe
+./stream_c.exe
+
+setenv OMP_PLACES threads
+setenv OMP_NUM_THREADS 56
 ./stream_f.exe
 ./stream_c.exe
