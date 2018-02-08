@@ -27,7 +27,7 @@ CFLAGS += -std=gnu99
 # gcc
 CFLAGS += -fopenmp
 CFLAGS += -mcmodel=large
-#CFLAGS += -march=native
+CFLAGS += -mcpu=thunderx2t99
 #CFLAGS += -homp
 #CFLAGS += -hdisplay_opt
 
@@ -45,6 +45,7 @@ FFLAGS += -cpp
 #FFLAGS += -mcmodel medium
 #FFLAGS += -qopenmp
 FFLAGS += -fopenmp
+FFLAGS += -mcpu=thunderx2t99
 #FFLAGS += -qopt-report=5
 #FFLAGS += -xMIC-AVX512
 #FFLAGS+=-qopt-prefetch-distance=64,8
