@@ -26,8 +26,8 @@ CFLAGS += -std=gnu99
 # gcc
 CFLAGS += -fopenmp
 CFLAGS += -mcmodel=large
-CFLAGS += -march=native
-CFLAGS += -mcpu=thunderx2t99
+#CFLAGS += -march=native
+#CFLAGS += -mcpu=thunderx2t99
 #CFLAGS += -homp
 #CFLAGS += -hdisplay_opt
 
@@ -49,7 +49,8 @@ FFLAGS += -fopenmp
 #FFLAGS+=-qopt-prefetch-distance=64,8
 #FFLAGS+=-qopt-streaming-stores=always
 #FFLAGS+=-qopt-prefetch=0
-FFLAGS += -mcpu=thunderx2t99
+#FFLAGS += -march=native
+#FFLAGS += -mcpu=thunderx2t99
 #FFLAGS+=-no-vec
 #FFLAGS+=-D__PREFETCH__
 #FFLAGS+=-D__INCREASE_AI__
