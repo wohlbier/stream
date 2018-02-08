@@ -26,7 +26,7 @@ CFLAGS=-g -O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTI
 # gcc
 #CFLAGS += -fopenmp
 #CFLAGS += -mcmodel=large
-CFLAGS += -homp
+#CFLAGS += -homp
 CFLAGS += -hdisplay_opt
 
 #PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
@@ -51,8 +51,8 @@ FFLAGS = -g -O3
 #FFLAGS+=-D__PREFETCH__
 #FFLAGS+=-D__INCREASE_AI__
 FFLAGS += -eF
-FFLAGS += -homp
-FFLAGS += -hpic
+#FFLAGS += -homp
+#FFLAGS += -hpic
 FFLAGS += -hdisplay_opt
 
 #FF := tau $(FF)
