@@ -36,11 +36,11 @@ CFLAGS += -mcmodel=large
 #CFLAGS += -march=skylake-avx512
 #CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
 #CFLAGS += -mavx2
-#CFLAGS += -fno-tree-vectorize
 CFLAGS += -march=native
 #CFLAGS += -funroll-loops
 #CFLAGS += -fopt-info-vec-all
 #CFLAGS += -g
+#CFLAGS += -fno-tree-vectorize
 
 
 #PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
@@ -59,7 +59,7 @@ FFLAGS += -fopenmp
 #FFLAGS += -xMIC-AVX512
 #FFLAGS += -march=skylake-avx512
 #FFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
-FFLAGS += -mavx2
+FFLAGS += -march=native
 #FFLAGS += -fno-tree-vectorize
 #FFLAGS += -qopt-prefetch-distance=64,8
 #FFLAGS += -qopt-streaming-stores=always
