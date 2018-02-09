@@ -36,12 +36,12 @@ CFLAGS += -mcmodel=large
 # gcc >= 5.x
 #CFLAGS += -march=skylake-avx512
 #CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
-CFLAGS += -mtune=native
+#CFLAGS += -mtune=native
 #CFLAGS += -mfma
 #CFLAGS += -mavx2
 #CFLAGS += -mllvm -force-vector-width=4
 #CFLAGS += -fno-tree-vectorize
-#CFLAGS += -march=native
+CFLAGS += -march=native
 #CFLAGS += -funroll-loops
 CFLAGS += -Rpass=\(loop-vectorize\|loop-unroll\|licm\)
 #CFLAGS += -g
@@ -51,15 +51,17 @@ CFLAGS += -Rpass=\(loop-vectorize\|loop-unroll\|licm\)
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
 #LDFLAGS += -L$(PAPI)/lib -lpapi
 
-FF = gfortran
+#FF = gfortran
 #FF = ifort
+FF = flang
 FFLAGS  = -g -O3 -fopenmp
 FFLAGS += -cpp
 #FFLAGS += -I$(AOCCDIR)/include
-FFLAGS += -fplugin=/usr/local/install/aocc-1.1/AOCC-1.1-FortranPlugin/dragonegg.so
+#FFLAGS += -fplugin=/usr/local/install/aocc-1.1/AOCC-1.1-FortranPlugin/dragonegg.so
 #FFLAGS += -fplugin-arg-dragonegg-llvm-option="-funroll-loops,-fdefault-integer-8,-ffast-math"
 #FFLAGS += -fplugin-arg-dragonegg-llvm-option="-fopenmp"
-FFLAGS += -madx -O2 -mcmodel=large
+#FFLAGS += -madx -O2 -mcmodel=large
+FFLAGS += -mcmodel=large
 #FFLAGS += -fopenmp
 #FFLAGS += -g -O3
 #FFLAGS += -fpp
@@ -76,7 +78,7 @@ FFLAGS += -madx -O2 -mcmodel=large
 #FFLAGS+=-qopt-prefetch=0
 #FFLAGS+=-no-vec
 #FFLAGS += -fopt-info-vec-all
-#FFLAGS += -mtune=native
+FFLAGS += -march=native
 #FFLAGS += -ftree-vectorizer-verbose=2
 #FFLAGS+=-D__PREFETCH__
 #FFLAGS+=-D__INCREASE_AI__
