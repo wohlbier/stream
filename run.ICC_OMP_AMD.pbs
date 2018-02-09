@@ -10,9 +10,14 @@ module load openmpi/intel/18.0
 cd $PBS_O_WORKDIR
 setenv OMP_DISPLAY_ENV true
 
-#setenv OMP_NUM_THREADS 1
-setenv OMP_NUM_THREADS 16
-#setenv OMP_NUM_THREADS 32
-
+setenv OMP_NUM_THREADS 1
 numactl -C 0-15 ./stream_f.exe
 numactl -C 0-15 ./stream_c.exe
+
+setenv OMP_NUM_THREADS 16
+numactl -C 0-15 ./stream_f.exe
+numactl -C 0-15 ./stream_c.exe
+
+setenv OMP_NUM_THREADS 32
+numactl -C 0-15,32-47 ./stream_f.exe
+numactl -C 0-15,32-47 ./stream_c.exe
