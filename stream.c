@@ -593,13 +593,13 @@ void tuned_STREAM_Copy()
   ssize_t j;
 #pragma omp parallel
   {
-    __m512d va;
-    __m512d vc;
+    __m256d va;
+    __m256d vc;
 #pragma omp for
     for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
-      va = _mm512_load_pd( a + j );
+      va = _mm256_load_pd( a + j );
       vc = va;
-      _mm512_store_pd( c + j, vc);
+      _mm256_store_pd( c + j, vc);
     }
   }
 }
@@ -607,16 +607,16 @@ void tuned_STREAM_Copy()
 void tuned_STREAM_Scale(STREAM_TYPE scalar)
 {
   ssize_t j;
-  __m512d vs = _mm512_set1_pd(scalar);
+  __m256d vs = _mm256_set1_pd(scalar);
 #pragma omp parallel
   {
-    __m512d vb;
-    __m512d vc;
+    __m256d vb;
+    __m256d vc;
 #pragma omp for
     for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
-      vc = _mm512_load_pd( c + j );
-      vb = _mm512_mul_pd( vs, vc );
-      _mm512_store_pd( b + j, vb);
+      vc = _mm256_load_pd( c + j );
+      vb = _mm256_mul_pd( vs, vc );
+      _mm256_store_pd( b + j, vb);
     }
   }
 }
@@ -626,15 +626,15 @@ void tuned_STREAM_Add()
   ssize_t j;
 #pragma omp parallel
   {
-    __m512d va;
-    __m512d vb;
-    __m512d vc;
+    __m256d va;
+    __m256d vb;
+    __m256d vc;
 #pragma omp for
     for (j=0; j<STREAM_ARRAY_SIZE; j+=VEC_LEN) {
-      va = _mm512_load_pd( a + j );
-      vb = _mm512_load_pd( b + j );
-      vc = _mm512_add_pd( va, vb );
-      _mm512_store_pd( c + j, vc);
+      va = _mm256_load_pd( a + j );
+      vb = _mm256_load_pd( b + j );
+      vc = _mm256_add_pd( va, vb );
+      _mm256_store_pd( c + j, vc);
     }
   }
 }
@@ -642,18 +642,18 @@ void tuned_STREAM_Add()
 void tuned_STREAM_Triad(STREAM_TYPE scalar)
 {
   ssize_t j;
-  __m512d vs = _mm512_set1_pd(scalar);
+  __m256d vs = _mm256_set1_pd(scalar);
 #pragma omp parallel
   {
-    __m512d va;
-    __m512d vb;
-    __m512d vc;
+    __m256d va;
+    __m256d vb;
+    __m256d vc;
 #pragma omp for
     for (j=0; j<STREAM_ARRAY_SIZE; j += VEC_LEN) {
-      vb = _mm512_load_pd( b + j );
-      vc = _mm512_load_pd( c + j );
-      va = _mm512_fmadd_pd( vs, vc, vb);
-      _mm512_store_pd( a + j, va);	  
+      vb = _mm256_load_pd( b + j );
+      vc = _mm256_load_pd( c + j );
+      va = _mm256_fmadd_pd( vs, vc, vb);
+      _mm256_store_pd( a + j, va);	  
     }
   }
 }

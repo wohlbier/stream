@@ -11,7 +11,7 @@ CC = gcc
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
 #CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=1000000000 -DOFFSET=0 -DNTIMES=100 -DTUNED
-CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 #-DTUNED
+CFLAGS = -g -O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 #-DTUNED
 CFLAGS += -std=gnu99
 #CFLAGS += -D__TAU_MANUAL_INST__
 
@@ -27,7 +27,7 @@ CFLAGS += -std=gnu99
 #CFLAGS += -xHost
 #CFLAGS += -qopt-prefetch-distance=64,8
 #CFLAGS += -qopt-streaming-stores=always
-#CFLAGS+=-no-vec
+#CFLAGS  += -no-vec
 
 # gcc
 CFLAGS += -fopenmp
@@ -35,10 +35,9 @@ CFLAGS += -mcmodel=large
 # gcc >= 5.x
 #CFLAGS += -march=skylake-avx512
 #CFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
-CFLAGS += -mfma
-CFLAGS += -mavx2
+#CFLAGS += -mavx2
 #CFLAGS += -fno-tree-vectorize
-#CFLAGS += -march=native
+CFLAGS += -march=native
 #CFLAGS += -funroll-loops
 #CFLAGS += -fopt-info-vec-all
 #CFLAGS += -g
@@ -60,15 +59,14 @@ FFLAGS += -fopenmp
 #FFLAGS += -xMIC-AVX512
 #FFLAGS += -march=skylake-avx512
 #FFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
-FFLAGS += -mfma
 FFLAGS += -mavx2
 #FFLAGS += -fno-tree-vectorize
 #FFLAGS += -qopt-prefetch-distance=64,8
 #FFLAGS += -qopt-streaming-stores=always
-#FFLAGS+=-qopt-prefetch=0
-#FFLAGS+=-no-vec
-#FFLAGS+=-D__PREFETCH__
-#FFLAGS+=-D__INCREASE_AI__
+#FFLAGS +=-qopt-prefetch=0
+#FFLAGS += -no-vec
+#FFLAGS += -D__PREFETCH__
+#FFLAGS += -D__INCREASE_AI__
 
 #FF := tau $(FF)
 #FFLAGS += -D__TAU_MANUAL_INST__
