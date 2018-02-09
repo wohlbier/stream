@@ -40,12 +40,11 @@ CFLAGS += -mcmodel=large
 #CFLAGS += -mfma
 #CFLAGS += -mavx2
 #CFLAGS += -mllvm -force-vector-width=4
-#CFLAGS += -fno-tree-vectorize
 CFLAGS += -march=native
 #CFLAGS += -funroll-loops
 CFLAGS += -Rpass=\(loop-vectorize\|loop-unroll\|licm\)
 #CFLAGS += -g
-
+#CFLAGS += -fno-tree-vectorize
 
 #PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
@@ -72,7 +71,6 @@ FFLAGS += -mcmodel=large
 #FFLAGS += -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl
 #FFLAGS += -mfma
 #FFLAGS += -mavx2
-#FFLAGS += -fno-tree-vectorize
 #FFLAGS += -qopt-prefetch-distance=64,8
 #FFLAGS += -qopt-streaming-stores=always
 #FFLAGS+=-qopt-prefetch=0
@@ -82,6 +80,7 @@ FFLAGS += -march=native
 #FFLAGS += -ftree-vectorizer-verbose=2
 #FFLAGS+=-D__PREFETCH__
 #FFLAGS+=-D__INCREASE_AI__
+#FFLAGS += -fno-tree-vectorize
 
 #FF := tau $(FF)
 #FFLAGS += -D__TAU_MANUAL_INST__
