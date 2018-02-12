@@ -1,0 +1,15 @@
+#!/bin/tcsh
+
+#PBS -N stream
+#PBS -l nodes=1:ppn=64
+#PBS -l walltime=1:00:00
+#PBS -j oe
+
+module load openmpi/intel/18.0
+module load intel/advisor/18.0
+
+cd $PBS_O_WORKDIR
+setenv OMP_DISPLAY_ENV true
+
+setenv OMP_NUM_THREADS 1
+./Intel_Advisor
