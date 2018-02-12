@@ -117,21 +117,21 @@ def main():
     # Scale
     AI = 0.062
     GFS = 0.56
-    plt.plot(AI,GFS,'o',ms=5,color='r',label='Scale')
+    plt.plot(AI,GFS,'o',ms=10,color='r',label='Scale')
     plt.plot([AI,AI], [ymin,ymax], color='k', linestyle='--', lw=0.2)
     plt.plot([xmin,xmax], [GFS,GFS], color='k', linestyle='--', lw=0.2)
 
     # Add
     AI = 0.042
     GFS = 0.48
-    plt.plot(AI,GFS,'o',ms=5,color='g',label='Add')
+    plt.plot(AI,GFS,'o',ms=10,color='g',label='Add')
     plt.plot([AI,AI], [ymin,ymax], color='k', linestyle='--', lw=0.2)
     plt.plot([xmin,xmax], [GFS,GFS], color='k', linestyle='--', lw=0.2)
 
     # Triad
     AI = 0.083
     GFS = 0.96
-    plt.plot(AI,GFS,'o',ms=5,color='b',label='Triad')
+    plt.plot(AI,GFS,'o',ms=10,color='b',label='Triad')
     plt.plot([AI,AI], [ymin,ymax], color='k', linestyle='--', lw=0.2)
     plt.plot([xmin,xmax], [GFS,GFS], color='k', linestyle='--', lw=0.2)
 
