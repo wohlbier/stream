@@ -1,7 +1,7 @@
 #!/bin/tcsh
 
 #PBS -N stream
-#PBS -l nodes=1:ppn=112
+#PBS -l nodes=1:ppn=128:b0
 #PBS -l walltime=10:00
 #PBS -j oe
 
@@ -16,11 +16,11 @@ setenv OMP_NUM_THREADS 1
 ./stream_f.exe
 ./stream_c.exe
 
-setenv OMP_NUM_THREADS 28
+setenv OMP_NUM_THREADS 32
 ./stream_f.exe
 ./stream_c.exe
 
 setenv OMP_PLACES threads
-setenv OMP_NUM_THREADS 56
+setenv OMP_NUM_THREADS 64
 ./stream_f.exe
 ./stream_c.exe
