@@ -6,13 +6,13 @@
 
 #CC = gcc
 CC = icc
-CC := tau $(CC)
+#CC := tau $(CC)
 # https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
 CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=100000000 -DOFFSET=0 -DNTIMES=100 
 CFLAGS += -std=gnu99
-CFLAGS += -D__TAU_MANUAL_INST__
+#CFLAGS += -D__TAU_MANUAL_INST__
 #icc
 CFLAGS += -mcmodel medium
 CFLAGS += -ffreestanding
@@ -30,8 +30,8 @@ CFLAGS += -xAVX
 #CFLAGS += -D__PAPI__ -I$(PAPI)/include
 #LDFLAGS += -L$(PAPI)/lib -lpapi
 
-FF = gfortran
-#FF = ifort
+#FF = gfortran
+FF = ifort
 FFLAGS = -g -O3
 #FFLAGS += -fpp
 FFLAGS += -cpp
@@ -51,10 +51,10 @@ FFLAGS += -fopenmp
 #FFLAGS += -D__TAU_MANUAL_INST__
 
 # Intel ITT Notify API
-#FFLAGS+=-D__ITT_NOTIFY__ -I/work1/compiler/vtune_amplifier_xe/include/intel64
-#LDFLAGS+=-L/work1/compiler/vtune_amplifier_xe/lib64 -littnotify
-#FFLAGS+=-D__ITT_NOTIFY__ -I/work1/compiler-beta/vtune_amplifier_2018/include/intel64
-#LDFLAGS+=-L/work1/compiler-beta/vtune_amplifier_2018/lib64 -littnotify
+#INTEL_PATH=/usr/local/install/intel-2018-update1/vtune_amplifier
+#FFLAGS+=-D__ITT_NOTIFY__ -I$(INTEL_PATH)/include/intel64
+#LDFLAGS+=-L$(INTEL_PATH)/lib64 -littnotify
+
 
 #all: stream_f.exe stream_c.exe assembler
 all: stream_f.exe stream_c.exe
