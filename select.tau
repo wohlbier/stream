@@ -1,9 +1,3 @@
 BEGIN_FILE_INCLUDE_LIST
 stream.f90
 END_FILE_INCLUDE_LIST
-
-# this puts profilers on every loop. don't want that. just use the one
-# manually inserted into triad.
-#BEGIN_INSTRUMENT_SECTION
-#loops routine="#"
-#END_INSTRUMENT_SECTION

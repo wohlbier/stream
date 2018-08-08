@@ -144,17 +144,22 @@ PROGRAM stream
   
   !*       --- SETUP --- determine precision and check timing ---
 #ifdef __TAU_MANUAL_PROFILE__
+  integer t_kernels(2) / 0, 0 /
+  save t_kernels
+  integer t_copy(2) / 0, 0 /
+  save t_copy
+  integer t_scale(2) / 0, 0 /
+  save t_scale
+  integer t_add(2) / 0, 0 /
+  save t_add
   integer t_triad(2) / 0, 0 /
   save t_triad
+
+  call tau_profile_timer(t_kernels,'t_kernels')
+  call tau_profile_timer(t_copy,'t_copy')
+  call tau_profile_timer(t_scale,'t_scale')
+  call tau_profile_timer(t_add,'t_add')
   call tau_profile_timer(t_triad,'t_triad')
-#endif
-#ifdef __PREFETCH__
-  ! cache mode:
-  integer, parameter :: pf_offset=2048
-  integer, parameter :: pf_hint=1
-  ! flat mcdram: doesn't help
-  !integer, parameter :: pf_offset=8
-  !integer, parameter :: pf_hint=2
 #endif
 
 #ifdef __ITT_NOTIFY__
@@ -216,30 +221,54 @@ PROGRAM stream
 
      t = mysecond()
      a(1) = a(1) + t
+#ifdef __TAU_MANUAL_PROFILE__
+     call tau_profile_start(t_kernels)
+     call tau_profile_start(t_copy)
+#endif
      !$OMP PARALLEL DO
      DO j = 1,n
         c(j) = a(j)
      END DO
+#ifdef __TAU_MANUAL_PROFILE__
+     call tau_profile_stop(t_copy)
+     call tau_profile_stop(t_kernels)
+#endif
      t = mysecond() - t
      c(n) = c(n) + t
      times(1,k) = t
 
      t = mysecond()
      c(1) = c(1) + t
+#ifdef __TAU_MANUAL_PROFILE__
+     call tau_profile_start(t_kernels)
+     call tau_profile_start(t_scale)
+#endif
      !$OMP PARALLEL DO
      DO j = 1,n
         b(j) = scalar*c(j)
      END DO
+#ifdef __TAU_MANUAL_PROFILE__
+     call tau_profile_stop(t_scale)
+     call tau_profile_stop(t_kernels)
+#endif
      t = mysecond() - t
      b(n) = b(n) + t
      times(2,k) = t
 
      t = mysecond()
      a(1) = a(1) + t
+#ifdef __TAU_MANUAL_PROFILE__
+     call tau_profile_start(t_kernels)
+     call tau_profile_start(t_add)
+#endif
      !$OMP PARALLEL DO
      DO j = 1,n
         c(j) = a(j) + b(j)
      END DO
+#ifdef __TAU_MANUAL_PROFILE__
+     call tau_profile_stop(t_add)
+     call tau_profile_stop(t_kernels)
+#endif
      t = mysecond() - t
      c(n) = c(n) + t
      times(3,k) = t
@@ -247,23 +276,16 @@ PROGRAM stream
      t = mysecond()
      b(1) = b(1) + t
 #ifdef __TAU_MANUAL_PROFILE__
+     call tau_profile_start(t_kernels)
      call tau_profile_start(t_triad)
 #endif
      !$OMP PARALLEL DO
      DO j = 1,n
-#ifdef __PREFETCH__
-        call mm_prefetch(a(j+pf_offset),pf_hint)
-        call mm_prefetch(b(j+pf_offset),pf_hint)
-        call mm_prefetch(c(j+pf_offset),pf_hint)
-#endif
-#ifdef __INCREASE_AI__
-        c(j) = a(j) + scalar*b(j) ! += 2 FL
-        b(j) = c(j) + scalar*a(j) ! += 2 FL
-#endif
         a(j) = b(j) + scalar*c(j) ! 2 FL
      END DO
 #ifdef __TAU_MANUAL_PROFILE__
      call tau_profile_stop(t_triad)
+     call tau_profile_stop(t_kernels)
 #endif
      t = mysecond() - t
      a(n) = a(n) + t

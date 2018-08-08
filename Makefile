@@ -1,54 +1,37 @@
 # for fortran need to
 # % ulimit -s unlimited
-# DDR4 & MCDRAM
-# % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 0 ./stream_c/f.exe
-# % OMP_NUM_THREADS=68 KMP_AFFINITY=scatter numactl -m 1 ./stream_c/f.exe
 
-#CC = gcc
 CC = icc
+#CC = gcc
 #CC := tau $(CC)
-# https://software.intel.com/en-us/forums/software-tuning-performance-optimization-platform-monitoring/topic/593585
-# Shown value of 30000000000 (30e9) is too large for my node.
+
 # Dr. Bandwidth says use >= 40000000 (40e6).
-CFLAGS=-O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=100000000 -DOFFSET=0 -DNTIMES=100 
+CFLAGS = -g -O3 -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=100000000 -DOFFSET=0 -DNTIMES=100 
 CFLAGS += -std=gnu99
-#CFLAGS += -D__TAU_MANUAL_INST__
 #icc
 CFLAGS += -mcmodel medium
 CFLAGS += -ffreestanding
 CFLAGS += -qopenmp
-#CFLAGS += -qopt-report=5
-#CFLAGS += -xMIC-AVX512
-CFLAGS += -xAVX
-#CFLAGS += -qopt-prefetch-distance=64,8 -qopt-streaming-stores=always
-#CFLAGS+=-no-vec
+
 # gcc
 #CFLAGS += -fopenmp
 #CFLAGS += -mcmodel=large
 
-#PAPI=/home/users/wohlbier/devel/packages/spack/opt/spack/linux-rhel7-x86_64/gcc-6.1.0/papi-master-ashjfzmpqkbxa6hudklfxji7oybhufb6
-#CFLAGS += -D__PAPI__ -I$(PAPI)/include
-#LDFLAGS += -L$(PAPI)/lib -lpapi
+#CFLAGS += -D__TAU_MANUAL_INST__
 
-#FF = gfortran
 FF = ifort
-FFLAGS = -g -O3
-#FFLAGS += -fpp
-FFLAGS += -cpp
-#FFLAGS += -mcmodel medium
-#FFLAGS += -qopenmp
-FFLAGS += -fopenmp
-#FFLAGS += -qopt-report=5
-#FFLAGS += -xMIC-AVX512
-#FFLAGS+=-qopt-prefetch-distance=64,8
-#FFLAGS+=-qopt-streaming-stores=always
-#FFLAGS+=-qopt-prefetch=0
-#FFLAGS+=-no-vec
-#FFLAGS+=-D__PREFETCH__
-#FFLAGS+=-D__INCREASE_AI__
+#FF = gfortran
 
-#FF := tau $(FF)
-#FFLAGS += -D__TAU_MANUAL_INST__
+FFLAGS = -g -O3
+FFLAGS += -fpp
+FFLAGS += -mcmodel medium
+FFLAGS += -qopenmp
+
+#FFLAGS += -cpp
+#FFLAGS += -fopenmp
+
+FF := tau $(FF)
+FFLAGS += -D__TAU_MANUAL_INST__
 
 # Intel ITT Notify API
 #INTEL_PATH=/usr/local/install/intel-2018-update1/vtune_amplifier
