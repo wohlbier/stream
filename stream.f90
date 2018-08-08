@@ -140,7 +140,7 @@ PROGRAM stream
   !C     ..
   
   !*       --- SETUP --- determine precision and check timing ---
-#ifdef __TAU_MANUAL_PROFILE__
+#ifdef __TAU_MANUAL_INST__
   integer t_kernels(2) / 0, 0 /
   save t_kernels
   integer t_copy(2) / 0, 0 /
@@ -218,7 +218,7 @@ PROGRAM stream
 
      t = mysecond()
      a(1) = a(1) + t
-#ifdef __TAU_MANUAL_PROFILE__
+#ifdef __TAU_MANUAL_INST__
      call tau_profile_start(t_kernels)
      call tau_profile_start(t_copy)
 #endif
@@ -226,7 +226,7 @@ PROGRAM stream
      DO j = 1,n
         c(j) = a(j)
      END DO
-#ifdef __TAU_MANUAL_PROFILE__
+#ifdef __TAU_MANUAL_INST__
      call tau_profile_stop(t_copy)
      call tau_profile_stop(t_kernels)
 #endif
@@ -236,7 +236,7 @@ PROGRAM stream
 
      t = mysecond()
      c(1) = c(1) + t
-#ifdef __TAU_MANUAL_PROFILE__
+#ifdef __TAU_MANUAL_INST__
      call tau_profile_start(t_kernels)
      call tau_profile_start(t_scale)
 #endif
@@ -244,7 +244,7 @@ PROGRAM stream
      DO j = 1,n
         b(j) = scalar*c(j)
      END DO
-#ifdef __TAU_MANUAL_PROFILE__
+#ifdef __TAU_MANUAL_INST__
      call tau_profile_stop(t_scale)
      call tau_profile_stop(t_kernels)
 #endif
@@ -254,7 +254,7 @@ PROGRAM stream
 
      t = mysecond()
      a(1) = a(1) + t
-#ifdef __TAU_MANUAL_PROFILE__
+#ifdef __TAU_MANUAL_INST__
      call tau_profile_start(t_kernels)
      call tau_profile_start(t_add)
 #endif
@@ -262,7 +262,7 @@ PROGRAM stream
      DO j = 1,n
         c(j) = a(j) + b(j)
      END DO
-#ifdef __TAU_MANUAL_PROFILE__
+#ifdef __TAU_MANUAL_INST__
      call tau_profile_stop(t_add)
      call tau_profile_stop(t_kernels)
 #endif
@@ -272,7 +272,7 @@ PROGRAM stream
 
      t = mysecond()
      b(1) = b(1) + t
-#ifdef __TAU_MANUAL_PROFILE__
+#ifdef __TAU_MANUAL_INST__
      call tau_profile_start(t_kernels)
      call tau_profile_start(t_triad)
 #endif
@@ -280,7 +280,7 @@ PROGRAM stream
      DO j = 1,n
         a(j) = b(j) + scalar*c(j) ! 2 FL
      END DO
-#ifdef __TAU_MANUAL_PROFILE__
+#ifdef __TAU_MANUAL_INST__
      call tau_profile_stop(t_triad)
      call tau_profile_stop(t_kernels)
 #endif
