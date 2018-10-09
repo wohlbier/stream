@@ -11,7 +11,10 @@ CC = icc
 # Shown value of 30000000000 (30e9) is too large for my node.
 # Dr. Bandwidth says use >= 40000000 (40e6).
 CFLAGS  = -g -O3 -qopenmp
-CFLAGS += -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=40000000 -DOFFSET=0 -DNTIMES=100 #-DTUNED
+CFLAGS += -DSTREAM_TYPE=double
+CFLAGS += -DSTREAM_ARRAY_SIZE=400000000
+CFLAGS += -DOFFSET=0 -DNTIMES=100
+#CFLAGS += -DTUNED
 CFLAGS += -std=gnu99 -mcmodel medium
 #CFLAGS += -D__TAU_MANUAL_INST__
 #CFLAGS += -ffreestanding
